@@ -1,6 +1,6 @@
 class Coche:
-    def __init__(self, marca, modelo, color,):
-        self.marca = marca
+    def __init__(self, modelo, color,):
+        self.marca = "Toyota"
         self.modelo = modelo
         self.color = color
         
@@ -14,10 +14,10 @@ class Coche:
         print(f"Coche: {self.marca} {self.modelo}, Color: {self.color}") 
   
 #Vamos haer un lote de autos 
-marca= input("Dame la marca del coche: ")
+# marca= input("Dame la marca del coche: ")
 modelo =input("Dame el modelo del coche: ")
 color =input("Dame el color del coche: ")       
-mi_coche = Coche(marca, modelo, color)  
+mi_coche = Coche(modelo, color)  
 mi_coche.mostrar_info()   
 mi_coche.arrancar()
 mi_coche.detener()
