@@ -13,9 +13,7 @@ Jorge,Matematicas,85
 Jorge,Literatura,94
 Lucía,Biología,75
 Carlos,Biología,91
-Ana,NaN,83
 Lucía,Historia,92
-NaN,Geografía,73
 Jorge,Física,65
 María,Biología,96
 Jorge,Ciencias,91
@@ -55,8 +53,6 @@ Ana,Historia,66
 Carlos,Historia,95
 Lucía,Matematicas,60
 Ana,Literatura,87
-Fernanda,NaN,79
-NaN,Geografía,96
 Pedro,Geografía,70
 Juan,Historia,99
 Carlos,Química,64

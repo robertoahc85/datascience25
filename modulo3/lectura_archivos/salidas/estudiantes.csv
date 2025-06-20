@@ -1,6 +1,6 @@
 Nombre,Curso,Calificacion
-Juan,Matematicas,90
-Ana,Historia,70
+Juan,Matematicas,80
+Ana,Historia,90
 Pedro,Ciencias,70
 Carlos,Literatura,64
 Carlos,Química,77
@@ -13,9 +13,9 @@ Jorge,Matematicas,85
 Jorge,Literatura,94
 Lucía,Biología,75
 Carlos,Biología,91
-Ana,Ciencias,83
+Ana,,83
 Lucía,Historia,92
-Luis,Geografía,73
+,Geografía,73
 Jorge,Física,65
 María,Biología,96
 Jorge,Ciencias,91
@@ -55,9 +55,9 @@ Ana,Historia,66
 Carlos,Historia,95
 Lucía,Matematicas,60
 Ana,Literatura,87
-Fernanda,Ciencias,79
-Pedro,Geografía,96
-Pedro,Geografía,96
+Fernanda,,79
+,Geografía,96
+Pedro,Geografía,70
 Juan,Historia,99
 Carlos,Química,64
 Fernanda,Geografía,100

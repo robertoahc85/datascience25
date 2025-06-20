@@ -22,3 +22,16 @@ print(f"El promedio de las calificaciones es: {promedio_cursos:.2f}")
 promedio_cursos_por_curso = df.groupby("Curso")["Calificacion"].mean()
 print("Promedio de calificaciones por curso:")
 print(promedio_cursos_por_curso)
+
+#Valor nulos
+print("Valores nulos en cada columna:")                 
+print(df.isnull())
+print(df.isnull().sum())
+df_sin_nulos = df.dropna()
+df_sin_nulos.to_csv("salidas/estudiantes_sin_nulos.csv", index=False)
+
+df_sin_columnas_nulas = df.dropna(axis=1)
+df_sin_columnas_nulas.to_csv("salidas/estudiantes_sin_columnas_nulas.csv", index=False)
+
+
+
