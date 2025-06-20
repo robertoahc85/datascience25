@@ -34,4 +34,9 @@ df_sin_columnas_nulas = df.dropna(axis=1)
 df_sin_columnas_nulas.to_csv("salidas/estudiantes_sin_columnas_nulas.csv", index=False)
 
 
+df['Calificacion'] = df['Calificacion'].fillna(df['Calificacion'].mean())
+df['Nombre'] = df['Nombre'].fillna("Desconocido")
+df['Curso'] = df['Curso'].fillna("Sin curso Asignado")
+df.to_csv("salidas/estudiantes_relleno.csv", index=False)
+
 
