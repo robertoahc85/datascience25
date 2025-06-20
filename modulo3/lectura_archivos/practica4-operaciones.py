@@ -38,5 +38,7 @@ df['Calificacion'] = df['Calificacion'].fillna(df['Calificacion'].mean())
 df['Nombre'] = df['Nombre'].fillna("Desconocido")
 df['Curso'] = df['Curso'].fillna("Sin curso Asignado")
 df.to_csv("salidas/estudiantes_relleno.csv", index=False)
-
+promedio_por_nombre = df.groupby('Nombre')['Calificacion'].mean().reset_index()
+promedio_por_nombre = promedio_por_nombre.sort_values(by='Calificacion',ascending=False)
+print(promedio_por_nombre)
 
