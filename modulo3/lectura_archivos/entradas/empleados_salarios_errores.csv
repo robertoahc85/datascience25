@@ -1,0 +1,106 @@
+ID,Nombre,Departamento,Salario,Nivel_Salarial
+1,Mariano,Recursos Humanos,24225,Medio-Alto
+2,Francisca,Recursos Humanos,14848,Bajo
+3,Enrique,Ventas,25005,Medio-Alto
+4,Aida,TI,15587,Bajo
+5,Víctor,Recursos Humanos,18137,Medio
+6,Jacinto,Ventas,15165,Bajo
+7,Adela,TI,26177,Medio-Alto
+8,Karina,Recursos Humanos,28092,Alto
+9,Salma,Marketing,28312,Alto
+10,Daniela,Marketing,31510,Alto
+11,Nadia,Marketing,15651,Bajo
+12,Estela,Recursos Humanos,31809,Alto
+13,Minerva,TI,34256,Alto
+14,Agustín,Marketing,23155,Medio
+15,Luisa,TI,30119,Alto
+16,Alicia,Ventas,17911,Bajo
+17,Sara,Recursos Humanos,32225,Alto
+18,Úrsula,TI,13043,Bajo
+19,,Finanzas,25390,Medio-Alto
+20,Mayte,Ventas,16399,Bajo
+21,Lourdes,Finanzas,25732,Medio-Alto
+22,Reynaldo,Marketing,31432,Alto
+23,Caridad,TI,29879,Alto
+24,Ana Luisa,TI,26410,Medio-Alto
+25,Gloria,,24672,Medio-Alto
+26,Gerardo,,26590,Medio-Alto
+27,Javier,Ventas,16106,Bajo
+28,Claudio,TI,28614,Alto
+29,Ricardo,TI,26762,Medio-Alto
+30,Tomás,TI,26237,Medio-Alto
+31,Darío,Recursos Humanos,20184,Medio
+32,Aurora,Marketing,25484,Medio-Alto
+33,Horacio,Ventas,14196,Bajo
+34,Leonor,Finanzas,30186,Alto
+35,Eloisa,TI,20152,Medio
+36,,TI,22691,Medio
+37,Luis Manuel,Ventas,32726,Alto
+38,Dulce María,Finanzas,27929,Alto
+39,María Elena,Finanzas,24642,Medio-Alto
+40,Sonia,Ventas,20083,Medio
+41,Nancy,Marketing,28317,Alto
+42,Gilberto,Recursos Humanos,19004,Medio
+43,Ramiro,TI,31714,Alto
+44,Francisca,Marketing,20750,Medio
+45,Hermelinda,TI,12562,Bajo
+46,Luis Miguel,Ventas,17026,Bajo
+47,Itzel,Ventas,29684,Alto
+48,Claudia,TI,26932,Medio-Alto
+49,Mariana,Finanzas,22479,Medio
+50,Juan Carlos,Marketing,19289,Medio
+51,Elsa,Recursos Humanos,33700,Alto
+52,Héctor,Marketing,19753,Medio
+53,Leonel,Finanzas,12240,Bajo
+54,Esparta,Finanzas,26617,Medio-Alto
+55,Esteban,,29001,Alto
+56,Paulina,Ventas,34443,Alto
+57,,TI,20721,Medio
+58,Zeferino,,32092,Alto
+59,Francisca,Finanzas,16398,Bajo
+60,Vanesa,,30738,Alto
+61,,Marketing,34162,Alto
+62,Lorenzo,Recursos Humanos,30320,Alto
+63,Javier,Ventas,24858,Medio-Alto
+64,Reynaldo,Finanzas,16918,Bajo
+65,Sergio,TI,13036,Bajo
+66,María,TI,25995,Medio-Alto
+67,Marcos,Recursos Humanos,21880,Medio
+68,Roberto,Marketing,15824,Bajo
+69,Juana,Marketing,23643,Medio
+70,Inés,Recursos Humanos,30361,Alto
+71,Raúl,Finanzas,14289,Bajo
+72,Trinidad,TI,21020,Medio
+73,Bruno,Finanzas,24024,Medio-Alto
+74,Isaac,Ventas,12545,Bajo
+75,César,Finanzas,29082,Alto
+76,Iván,Ventas,18622,Medio
+77,Emilio,Recursos Humanos,24014,Medio-Alto
+78,Eloy,Ventas,25734,Medio-Alto
+79,Dulce,Ventas,33730,Alto
+80,Paulina,Ventas,30121,Alto
+81,Rodrigo,TI,33664,Alto
+82,Mariano,TI,26664,Medio-Alto
+83,,Finanzas,31700,Alto
+84,Alfonso,Recursos Humanos,17735,Bajo
+85,Oswaldo,Marketing,30101,Alto
+86,Abigail,Marketing,13490,Bajo
+87,Reynaldo,Ventas,24322,Medio-Alto
+88,Yuridia,Finanzas,22753,Medio
+89,Carolina,Recursos Humanos,14553,Bajo
+90,Sessa,Ventas,26349,Medio-Alto
+91,Jorge,Marketing,21079,Medio
+92,Concepción,Recursos Humanos,20141,Medio
+93,Lucas,Ventas,16721,Bajo
+94,Lucas,TI,21106,Medio
+95,Dolores,Ventas,17787,Bajo
+96,Gregorio,Marketing,25628,Medio-Alto
+97,Zoé,Ventas,32477,Alto
+98,Frida,Recursos Humanos,22011,Medio
+99,Soledad,Marketing,18332,Medio
+100,Isaac,Marketing,31988,Alto
+84,Alfonso,Recursos Humanos,17735,Bajo
+31,Darío,Recursos Humanos,20184,Medio
+57,,TI,20721,Medio
+25,Gloria,,24672,Medio-Alto
+17,Sara,Recursos Humanos,32225,Alto
