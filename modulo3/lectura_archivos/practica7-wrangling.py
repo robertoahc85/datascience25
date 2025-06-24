@@ -30,6 +30,17 @@ df.to_csv("salidas/datos_rellenados.csv", index=False)
 #Paso6  Discretizar "Horas trabajos semanales" en categoria
 df["Horas_Categoria"]= pd.cut(df["Horas_Trabajo_Semanal"], bins=[0,30,40,50,np.inf],labels=["Bajo","Normal","Alto","Extremo"])
 df.to_csv("salidas/hora_categorizadas.csv",index=False)
+#paso 7: Agregar descripcion del nivel educativo(join externo)
+niveles = pd.read_csv("entradas/nivel_educativo_referencia.csv")
+df = df.merge(niveles, left_on="Nivel_Educativo", right_on="Codigo", how="left")
+df.to_csv("salidas/datos_con_nivel_educativo.csv")
+#Paso 8 : Agrupacion por departamento y horas de trabajo"
+agrupado = df.groupby(["Departamento","Horas_Categoria"])["Salario"].mean().reset_index()
+print("Resumen")
+print(agrupado)
+
+
+
 
 
 
