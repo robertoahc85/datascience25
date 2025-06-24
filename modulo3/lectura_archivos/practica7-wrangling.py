@@ -27,7 +27,9 @@ df["Edad"]=df["Edad"].fillna(df["Edad"].median())
 df["Salario"]=df["Salario"].fillna(df["Salario"].mean())
 df["Horas_Trabajo_Semanal"]=df["Horas_Trabajo_Semanal"].fillna(df["Horas_Trabajo_Semanal"].mean())
 df.to_csv("salidas/datos_rellenados.csv", index=False)
-#
+#Paso6  Discretizar "Horas trabajos semanales" en categoria
+df["Horas_Categoria"]= pd.cut(df["Horas_Trabajo_Semanal"], bins=[0,30,40,50,np.inf],labels=["Bajo","Normal","Alto","Extremo"])
+df.to_csv("salidas/hora_categorizadas.csv",index=False)
 
 
 
