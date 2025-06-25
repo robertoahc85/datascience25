@@ -54,4 +54,29 @@ df_pivot = df_pivotable.pivot(index='Fecha', columns='Categoria', values='Ventas
 print("######3.Tabla pivoteada######")
 print(df_pivot.head(10))
 
+#Paso 4:  Despivotado con Melt
+#Revertimos el pivot anterior para volver
+df_melted = df_pivot.reset_index().melt(
+    id_vars= 'Fecha',
+    var_name= 'Categoria',
+    value_name= 'Ventas'
+)
+print("--- Paso 4. Melt (despivotado)")
+print(df_melted.head(10))
+
+
+#Paso 5, Concatenacion de Dataframe
+df_extra= df_ventas.copy()
+df_extra['Fecha'] = pd.to_datetime(df_extra['Fecha']) + pd.Timedelta(days=10)
+df_extra['Fecha'] = df_extra['Fecha'].dt.strftime('%Y-%m-%d')
+
+df_concat = pd.concat([df_ventas, df_extra], axis=0 )
+print("\n Paso5 : Concatenacion ---")
+print(df_concat.head(10))
+df_concat.to_csv("salidas/paso5_concata.csv")
+
+
+
+
+
 
