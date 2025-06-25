@@ -45,4 +45,13 @@ df_grouped= df_ventas.groupby(['Sucursal','Categoria'])[['Ventas','Unidades']].a
 print(df_grouped.head(10))
 
 #Paso3 . Transformacion  de estructura con Pivot
+#Agrupamos primero por fecha y categoria para evitar duplicados
+print("----------Paso3. Pivot Table----")
+df_pivotable = df_ventas.groupby(["Fecha","Categoria"])['Ventas'].sum().reset_index()
+print(df_pivotable.head(10))
+#Transformar el dataframe a formato ancho(Categoria como columnas)
+df_pivot = df_pivotable.pivot(index='Fecha', columns='Categoria', values='Ventas')
+print("######3.Tabla pivoteada######")
+print(df_pivot.head(10))
+
 
