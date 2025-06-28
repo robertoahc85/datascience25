@@ -68,8 +68,40 @@ with PdfPages('salida/analisis_reporte.pdf') as pdf:
     plt.close()
     
     
-#Pagina 2    
+    #Pagina Tabla de frencuencias  
+    fig, ax = plt.subplots(figsize=(11,8.5)) 
+    ax.axis('off')
+    tabla = pd.concat([freq_color,freq_satifacion], axis=1, keys=['Color', 'Satifacion']).fillna('')
+    t= ax.table(cellText=tabla.values,
+                colLabels=tabla.columns,
+                rowLabels=tabla.index,
+                loc='center')
+    t.scale(1,1.5)
+    ax.set_title("Frencuencia de variable categorica", fontsize=14, pad=20)
+    pdf.savefig()
+    plt.close
+
+#Pagina3 : Estadisticas descriptivas
+    fig, ax = plt.subplots(figsize=(11,8.5)) 
+    ax.axis('off')
+    resumen= pd.concat([estadisticas_originales.round(2),estadisticas_limpia.round(2)], axis=1, keys=['Original', 'limpio'])
+    t= ax.table(cellText=resumen.values,
+                colLabels=resumen.columns,
+                rowLabels=resumen.index,
+                loc='center')
+    t.scale(1,1.5)
+    ax.set_title("Estadisticas descriptiva(con y sin Outliers)", fontsize=14, pad=20)
+    pdf.savefig()
+    plt.close
+    
+    #Pagina 4
+    fig, axs = plt.subplots(figsize=(11, 4)) 
+    axs.hist(df['Children'], bins=range(df['Children'].min(),df['Children'].max() + 1), edgecolor='black')
+    axs.set_title("Children Original")
+    axs.set_xlabel("Numero de hijos")
+    axs.set_ylabel("Frencuencia")
+    pdf.savefig()
+    plt.close
     
 
-
-
+    
