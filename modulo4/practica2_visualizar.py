@@ -47,20 +47,28 @@ out_temp, li_t ,ls_t = detectar_outlier_iqr(df['Temperature'])
 print(" Children:\n",out_children.values)
 print(" Temperature:\n",out_temp.values)
 
-# print("Temperatura",out_temp)
+#Eliminar registro  con outlier
+df_clean = df[
+    (df['Children'].between(li_c,ls_c)) &
+    (df['Temperature'].between(li_t,ls_t)) ]
 
-# sn.boxplot(data=df,y='Children', ax=axes)
+estadisticas_limpia = calcular_estadisticas(df_clean[['Children', 'Temperature']])
+print(estadisticas_limpia)
 
 
-
-
-
-#Paso 6: Crear Pdf con analisis 
-# with PdfPages('salidas/analisis_reporte.pdf') as pdf:
-#     #Pagina 1: Portada
-#     fig = plt.figure(figsize=(11,85))
-#     plt.suptitle("Reporte Analisis de Datos", fontsize=16, y=0.95)
-#     plt.text(0.1, 0.6, f"Dataset Original:{len(df)} registros", fontsize=12)
+# Paso 6: Crear Pdf con analisis 
+with PdfPages('salida/analisis_reporte.pdf') as pdf:
+    #Pagina 1: Portada
+    fig = plt.figure(figsize=(11,8.5))
+    plt.suptitle("Reporte Analisis de Datos", fontsize=16, y=0.95)
+    plt.text(0.1, 0.6, f"Dataset Original:{len(df)} registros", fontsize=12)
+    plt.text(0.1, 0.4, f"Dataset limpios:{len(df_clean)} registros", fontsize=12)
+    plt.axis('off')
+    pdf.savefig(fig)
+    plt.close()
+    
+    
+#Pagina 2    
     
 
 
