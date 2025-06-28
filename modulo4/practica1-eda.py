@@ -61,5 +61,5 @@ plt.show()
 
 #5.4 pairplot(Analis Multivariado visual)
 sns.pairplot(df[['Edad','Salario']])
-plt.suptitle("Distribucion y relacion entre Edad y Salario", y=1.02)
+plt.suptitle("Distribucion y relacion entre Edad y Salario", y=1.00)
 plt.show()
