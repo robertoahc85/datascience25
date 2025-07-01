@@ -26,8 +26,29 @@ print("\nTabla de contigencia entre genero y grupo de estudio")
 print(crosstab_result)
 
 #4. Visualizacion de Corelaciones
+#crear una figura tamano  6x4
+plt.figure(figsize=(6,4))
+sns.scatterplot(data=df,x='hours_studied', y= 'exam_score', hue='study_group')
 
+#anadimos titulo y etiquetas
+plt.title("Horas Estudiadas vs. Puntaje")
+plt.xlabel("Horas Estudiadas por Semana")
+plt.ylabel("Puntaje en Examen")
 
+#Anadir linea de cuadriculas
+plt.grid(True)
+#Ajustar margenes automaticos
+plt.tight_layout()
+#Mostrar el grafico
+plt.show()
+
+#Mapa de color 
+plt.figure(figsize=(6,4))
+
+sns.heatmap(cor_matrix, annot=True, cmap='coolwarm', fmt=".2f")
+plt.title("Mapa de calor  - Correlacion de Variables")
+plt.tight_layout()
+plt.show()
 
 
 
