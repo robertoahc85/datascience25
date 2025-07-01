@@ -103,5 +103,10 @@ with PdfPages('salida/analisis_reporte.pdf') as pdf:
     pdf.savefig()
     plt.close
     
+    #Grafica  de limpio
+    
+    #Boxplot original y limpior
+    
+    #Histograma y  boxpplot original y limpio de temperatura
 
     
