@@ -81,3 +81,34 @@ plt.ylabel("Región", fontsize=14)
 plt.tight_layout()
 plt.savefig("graficas/barplot_region_percent_favor.png")
 plt.show()
+
+# Gráfico 5: Violinplot - Distribución del porcentaje a favor por región
+plt.figure(figsize=(12, 6))
+sns.violinplot(x='region', 
+               y='percent_favor',
+               data=df,
+               cut=0, #Corta los valores extremos
+               palette='pastel', #Paleta de colores
+               inner='quartile', #Muestra los cuartiles internos
+)
+plt.title("Distribución del Porcentaje a Favor por Región", fontsize=16,pad=15)
+plt.xlabel("Región", fontsize=14)
+plt.ylabel("Porcentaje a Favor (%)", fontsize=14)
+plt.xticks(rotation=45) #Rota las etiquetas del eje x
+plt.tight_layout()
+plt.savefig("graficas/violinplot_region_percent_favor.png")
+plt.show()
+
+# Gráfico 6: Triada clave (% a favor, %Contra, Participación)
+
+sns.pairplot(df,
+             vars=['percent_favor', 'percent_against', 'turnout'],
+             hue='region', #Colorea por región,
+             diag_kind='kde', #Curva KDE en la diagonal,
+             height=2.4
+             corner=True, #Muestra solo la mitad inferior
+)
+plt.suptitle("Relaciones bivariada clave por Region", fontsize=16, y=1.02)
+plt.tight_layout()
+plt.savefig("graficas/pairplot_triada_clave.png")
+plt.show()
