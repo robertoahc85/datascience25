@@ -22,7 +22,7 @@ print("Primeras Filas del dataset",df.head(5))
 
 # Creamos carpeta donde guardar las graficas
 os.makedirs("graficas", exist_ok=True)
-# Gráfico 1: Histplot + kde  - Distribución del porcentaje a favor
+# # Gráfico 1: Histplot + kde  - Distribución del porcentaje a favor
 sns.histplot(df['percent_favor'], 
              kde=True, #Agrega la curva KDE
              color='royalblue', #Color de barra del histogram
@@ -105,10 +105,31 @@ sns.pairplot(df,
              vars=['percent_favor', 'percent_against', 'turnout'],
              hue='region', #Colorea por región,
              diag_kind='kde', #Curva KDE en la diagonal,
-             height=2.4
+             height=2.4,
              corner=True, #Muestra solo la mitad inferior
 )
 plt.suptitle("Relaciones bivariada clave por Region", fontsize=16, y=1.02)
 plt.tight_layout()
 plt.savefig("graficas/pairplot_triada_clave.png")
+plt.show()
+
+#grafico 7: FacetGrid - Densidad a favor  segun rango de participación
+#Creamos 4 densidades de participación (bins)
+df['turnout_bins'] = pd.cut(df['turnout'],
+                            bins=[60, 70, 80, 90, 100],#   Rangos de participación
+                            labels=['60-70%', '70-80%', '80-90%', '90-100%'], #Etiquetas de los rangos
+)
+g = sns.FacetGrid(df, col='turnout_bins', col_wrap=2, height=3.2, sharex=True)# Fuera que  todo lo subgrafico tenga el mismo eje x
+
+g.map_dataframe(
+    sns.kdeplot,
+    x='percent_favor',
+    fill=True,
+    clip=(30,70)
+    ) #Curva KDE
+
+g.set_titles(col_template="{col_name} participacion") #Título de cada subgráfico
+g.fig.subplots_adjust(top=0.9) #Ajusta el espacio superior
+g.fig.suptitle("Distribución del Porcentaje a Favor por Rango de Participación", fontsize=16)
+g.savefig("graficas/facetgrid_turnout_bins_percent_favor.png")
 plt.show()
