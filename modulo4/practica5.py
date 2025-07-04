@@ -49,3 +49,35 @@ plt.ylabel("Densidad", fontsize=14)
 plt.tight_layout()
 plt.savefig("graficas/kde_turnout.png")
 plt.show()  
+
+#grafico 3: Regplot - Relación entre participación y porcentaje a favor
+plt.figure(figsize=(9, 5))
+sns.regplot(x='turnout',
+            y='percent_favor',
+            data=df,
+            scatter_kws={'alpha':0.5, 'color':'darkorange'}, #Configuración de puntos transparencia y color
+            line_kws={'color':'red', 'linewidth':2}, #Configuración de la línea de regresión
+        )
+plt.title("Relación entre Participación Electoral y Porcentaje a Favor", fontsize=16,pad=15)
+plt.xlabel("Participación Electoral (%)", fontsize=14)
+plt.ylabel("Porcentaje a Favor (%)", fontsize=14)
+plt.tight_layout()
+plt.savefig("graficas/regplot_turnout_percent_favor.png")
+plt.show()
+
+# Gráfico 4: Barplot - Promedio de porcentaje a favor por región
+#Calculamos el promedio de porcentaje a favor por región
+region_avg = (df.groupby('region',as_index=False)).mean(numeric_only=True).sort_values(by='percent_favor', ascending=False)
+plt.figure(figsize=(11, 6))
+sns.barplot(x='percent_favor', 
+            y='region', 
+            data=region_avg, 
+            palette='viridis', #Paleta de colores
+            edgecolor='black', #Color del borde de las barras
+            )
+plt.title("Promedio de Porcentaje a Favor por Región", fontsize=16,pad=15)
+plt.xlabel("Porcentaje a Favor (%)", fontsize=14)
+plt.ylabel("Región", fontsize=14)
+plt.tight_layout()
+plt.savefig("graficas/barplot_region_percent_favor.png")
+plt.show()
