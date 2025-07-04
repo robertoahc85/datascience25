@@ -35,3 +35,17 @@ plt.ylabel("Frecuencia", fontsize=14)
 plt.tight_layout()
 plt.savefig("graficas/histograma_percent_favor.png")
 plt.show()
+
+# Gráfico 2: Kde - Distribución del participación electoral
+plt.figure(figsize=(9, 5))
+sns.kdeplot(df['turnout'],
+            shade=True, #Sombreado debajo de la curva
+            color='seagreen', #Color de la curva
+            
+)
+plt.title("Distribución de la Participación Electoral en el Plebiscito Chile 2023", fontsize=16,pad=15)
+plt.xlabel("Participación Electoral (%)", fontsize=14)
+plt.ylabel("Densidad", fontsize=14)
+plt.tight_layout()
+plt.savefig("graficas/kde_turnout.png")
+plt.show()  
