@@ -25,8 +25,30 @@ df = pd.read_csv('entrada/produccion_petroleo_mexico.csv')
 # Filtra  un pozo específico de linea y area
 pozo_norte = df[df['Well_ID'] == 'Pozo Norte'].sort_values("Day")
 
+# Grafico de Dispersion de Producción de Producción vs Presion en cabeza del pozo
+plt.figure(figsize=(8, 5))
+plt.scatter(pozo_norte['Wellhead_Pressure'], pozo_norte['Oil_Production'],cmap='viridis', alpha=0.7)
+plt.xlabel('Presión en cabeza del pozo (psi)')
+plt.ylabel('Producción de Petróleo (barriles)')
+plt.title('Producción de Petróleo vs Presión en Cabeza del Pozo')
+plt.grid()
+plt.savefig('salida/produccion_vs_presion.png', dpi=300, bbox_inches='tight')
+plt.show()
 # Crea lista de pozos unicos
 pozos_unicos = df['Well_ID'].unique()
+
+# Gráfico de líneas de producción de petróleo  en Pozo Norte
+plt.figure(figsize=(8, 5))
+plt.plot(pozo_norte['Day'], pozo_norte['Oil_Production'], label='Producción de diaria', color='blue')
+plt.xlabel('Día')
+plt.ylabel('Producción de Petróleo (barriles)')
+plt.title('Producción Diaria de Petróleo en Pozo Norte')
+plt.xlim(0,100) # Ajusta los
+plt.legend()
+plt.grid()
+plt.savefig('salida/produccion_diaria_pozo_norte.png', dpi=300, bbox_inches='tight')
+plt.show()
+
 
 #Grafico de superficie 3D de producción de petróleo 
 fig =plt.figure(figsize=(10, 6))
