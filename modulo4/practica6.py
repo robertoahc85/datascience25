@@ -25,6 +25,43 @@ df = pd.read_csv('entrada/produccion_petroleo_mexico.csv')
 # Filtra  un pozo específico de linea y area
 pozo_norte = df[df['Well_ID'] == 'Pozo Norte'].sort_values("Day")
 
+wells = df['Well_ID'].unique()
+
+# Violin Plot Distribución de Presion por Pozo
+data = [df[df['Well_ID'] == w ]['Wellhead_Pressure'] for w in wells]
+plt.figure(figsize=(10, 6))
+plt.violinplot(data, showmeans=True, showmedians=True)
+plt.xticks(range(1, len(wells) + 1), wells, rotation=45)
+plt.xlabel('Pozo')
+plt.ylabel('Presión en Cabeza del Pozo (psi)')
+plt.title('Distribución de Presión en Cabeza del Pozo por Pozo')
+plt.grid()
+plt.savefig('salida/violin_plot_presion_pozo.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+#grafica de Area - produccion acumulada (Pozo Norte)
+cum_pro = pozo_norte.set_index('Day')['Oil_Production'].cumsum()
+plt.figure(figsize=(10, 6))
+plt.fill_between(cum_pro.index, cum_pro, color='green', alpha=0.5)
+plt.xlabel('Día')
+plt.ylabel('Producción Acumulada de Petróleo (barriles)')
+plt.title('Producción Acumulada de Petróleo en Pozo Norte')
+plt.grid()
+plt.savefig('salida/produccion_acumulada_pozo_norte.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+#curva de distribución de producción de petróleo y gas
+plt.figure(figsize=(10, 6))
+df["Gas_Production"].plot(kind='kde', label='Producción de Gas', color='orange')
+df["Oil_Production"].plot(kind='kde', label='Producción de Petróleo', color='blue')
+plt.xlabel('Producción (barriles o pies cúbicos)')
+plt.ylabel('Densidad Estimada')         
+plt.title('Curva de Distribución de Producción de Petróleo y Gas')
+plt.legend()
+plt.grid()
+plt.savefig('salida/curva_distribucion_produccion_petroleo_gas.png', dpi=300, bbox_inches='tight')
+plt.show()
+
 #Grafica de barras de producción por pozo
 avg_production = df.groupby('Well_ID')['Oil_Production'].mean().sort_values(ascending=False)
 plt.figure(figsize=(10, 6))
