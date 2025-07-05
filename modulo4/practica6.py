@@ -25,6 +25,20 @@ df = pd.read_csv('entrada/produccion_petroleo_mexico.csv')
 # Filtra  un pozo específico de linea y area
 pozo_norte = df[df['Well_ID'] == 'Pozo Norte'].sort_values("Day")
 
+#Grafica de barras de producción por pozo
+avg_production = df.groupby('Well_ID')['Oil_Production'].mean().sort_values(ascending=False)
+plt.figure(figsize=(10, 6))
+avg_production.plot(kind='bar', color='skyblue')
+plt.xlabel('Pozo')
+plt.ylabel('Producción Promedio de Petróleo (barriles)')
+plt.title('Producción Promedio de Petróleo por Pozo')
+plt.axhline(avg_production.mean(), color='red', linestyle='--', label='Media General')
+plt.legend()
+plt.grid(True,axis='y')
+plt.savefig('salida/produccion_promedio_por_pozo.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+
 # Grafico de Dispersion de Producción de Producción vs Presion en cabeza del pozo
 plt.figure(figsize=(8, 5))
 plt.scatter(pozo_norte['Wellhead_Pressure'], pozo_norte['Oil_Production'],cmap='viridis', alpha=0.7)
