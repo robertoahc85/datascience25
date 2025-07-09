@@ -14,6 +14,10 @@
 # interacción para contrastar relaciones “perfectas” vs “ruidosas”.
 
 import pandas as pd,numpy as np ,matplotlib.pyplot as plt, seaborn as sns
+#Regresión lineal con interacción
+import statsmodels.api as sm
+import statsmodels.formula.api as smf
+sns.set(style="whitegrid")
 
 url = "https://raw.githubusercontent.com/mwaskom/seaborn-data/master/tips.csv"
 tips = pd.read_csv(url)
@@ -81,7 +85,21 @@ print("\nMuestra Sesgada:\n", muestra_sesgado.head())
 print("\nMedia de la propina - muestra Aleatorioa:", muestra_aleatorio['tip'].mean())
 print("\nMedia de la propina - muestra Sesgada:", muestra_sesgado['tip'].mean())
 
+#Regresión lineal con interacción
+# Modelo de regresión lineal con interacción
+#Modelo : tip= β0 + β1·total_bill + β2·Experiment + β3·total_bill*Experiment
+model = smf.ols('tip ~ total_bill * Experiment', data=df).fit() #regresión lineal por mínimos cuadrados
+# print("\nResumen del modelo de regresión lineal:\n", model.summary().tables[0]) #table[0] Metadato del modelo r2,n,etc,
+print("\nResumen del modelo de regresión lineal:\n", model.summary().tables[1]) #table[1] coeficientes de regressión 
+# print("\nResumen del modelo de regresión lineal:\n", model.summary().tables[2]) #table[2] Informacion extra
+# Visualizar los resultados de la regresión
 
+# Visualizar los resultados de la regresión
+sns.lmplot(x='total_bill', y='tip', hue='Experiment', data=df,
+           height=6, aspect=1.3,
+           scatter_kws={'alpha': 0.45})
+plt.title('Propina idea (15%) vs Propina real (aleatoria)')
+plt.show()
 
 
 
