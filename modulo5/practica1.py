@@ -68,7 +68,7 @@ alpha = 0.05  # Nivel de significancia
 grupo_con_musica = datos[datos['Grupo'] == 'Con música']['Puntuación']
 grupo_sin_musica = datos[datos['Grupo'] == 'Sin música']['Puntuación']
 pval = stats.ttest_ind(grupo_con_musica, grupo_sin_musica, equal_var=False)
-print(f"p-valor: {pval.pvalue:.4f}")
+print(f"p-valor: {pval.pvalue}")
 if pval.pvalue < alpha:
     print("Rechazamos la hipótesis nula: La música tiene un efecto significativo en las puntuaciones de memoria.")
 else:
