@@ -41,15 +41,29 @@ df.to_csv("input/tips_combined.csv", index=False)
 # A: Eventos medibles: Propinas mayores a 5
 # B: Eventos medibles: consumo realizado en domingo (sun)
 S = df["Experiment"].unique  # # Espacio muestral
-A = df[df["tip"] > 5]  # Evento A: Propinas mayores
-B = df[df["day"] == "Sun"]  # Evento B: Consumo realizado
+A = df["tip"] >= 5 # Evento A: Propinas mayores
+B = df["day"] == "Sun"  # Evento B: Consumo realizado
 # Calcular probabilidades simples
-P_A = A.mean()  # Probabilidad de A
-P_B = B.mean()  # Probabilidad de B
-print(P_A)
+P_A = A.mean()  # Probabilidad de A P(A)= numero de propinas mayores a 5 / total de propinas
+P_B = B.mean()  # Probabilidad de B P(B)= numero de consumos realizados en domingo / total de consumos
+print(f"Probabilidad de A (Propinas mayores a 5): {P_A:.2f}")
+print(f"Probabilidad de B (Consumo realizado en domingo): {P_B:.2f}")   
 # Calcular probabilidades conjuntas
-P_AyB = (A & B).mean()  # Probabilidad de A y B #P(A ∩ B)
-P_A_B = (P & B).sum()/B.sum() # Probabilidad de A dado B #P(A | B)
+P_AyB = (A & B).mean()  # Probabilidad de A y B #P(A ∩ B)= numero de propinas mayores a 5 y consumos realizados en domingo / total de consumos 
+print(f"Probabilidad de A y B (Propinas mayores a 5 y consumo en domingo): {P_AyB:.2f}")
+P_A_B = (A & B).sum()/B.sum() # Probabilidad de A dado B #P(A | B) = numero de propina alta en Domingp/ Total de domingo
+print(f"Probabilidad de A dado B (Propinas mayores a 5 dado consumo en domingo): {P_A_B:.2f}")
+# Visualizar la diferencia entre el experimento determinístico y aleatorio
+plt.figure(figsize=(12, 6))
+sns.boxplot(x='Experiment', y='tip', data=df)
+plt.title('Comparación de Propinas: Determinístico vs Aleatorio')
+plt.xlabel('Experimento')
+plt.ylabel('Propina')
+plt.grid(True)
+plt.savefig("output/boxplot_propinas.png")
+plt.show()
+
+
 
 
 
