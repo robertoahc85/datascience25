@@ -54,19 +54,32 @@ print(f"Probabilidad de A y B (Propinas mayores a 5 y consumo en domingo): {P_Ay
 P_A_B = (A & B).sum()/B.sum() # Probabilidad de A dado B #P(A | B) = numero de propina alta en Domingp/ Total de domingo
 print(f"Probabilidad de A dado B (Propinas mayores a 5 dado consumo en domingo): {P_A_B:.2f}")
 # Visualizar la diferencia entre el experimento determinístico y aleatorio
-plt.figure(figsize=(12, 6))
-sns.boxplot(x='Experiment', y='tip', data=df)
-plt.title('Comparación de Propinas: Determinístico vs Aleatorio')
-plt.xlabel('Experimento')
-plt.ylabel('Propina')
-plt.grid(True)
-plt.savefig("output/boxplot_propinas.png")
-plt.show()
+# plt.figure(figsize=(12, 6))
+# sns.boxplot(x='Experiment', y='tip', data=df)
+# plt.title('Comparación de Propinas: Determinístico vs Aleatorio')
+# plt.xlabel('Experimento')
+# plt.ylabel('Propina')
+# plt.grid(True)
+# plt.savefig("output/boxplot_propinas.png")
+# plt.show()
 
+#3.1 Tabla (arbol) de probabilidades
+tabla = (df.assign(tip_bin=pd.cut(df['tip'], bins=[0, 5, np.inf], labels=['<=5', '>5']))
+         .groupby(['Experiment', 'tip_bin'])
+         .size()
+         .div(len(df)) # = n * de casos en esa combinación / total de casos
+         .unstack(fill_value=0) # un tabla data frame con los valores de la tabla de probabilidades
+)
+print("\nTabla de Probabilidades: \n", tabla)
 
-
-
-
+#Efecto del muestreo en la estimación de probabilidades
+# Muestreo aleatorio
+muestra_aleatorio = df.sample(60, random_state=0)
+muestra_sesgado = df.query("time == 'Dinner'").sample(60, random_state=0)
+print("\nMuestra Aleatoria:\n", muestra_aleatorio.head())
+print("\nMuestra Sesgada:\n", muestra_sesgado.head())
+print("\nMedia de la propina - muestra Aleatorioa:", muestra_aleatorio['tip'].mean())
+print("\nMedia de la propina - muestra Sesgada:", muestra_sesgado['tip'].mean())
 
 
 
