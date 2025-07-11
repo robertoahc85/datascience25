@@ -4,7 +4,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-import scipy.stats as stats
+import scipy.stats as stats 
+from scipy.stats  import poisson
 # Configuración de estilo para los gráficos
 
 #Generacion de datos simulados
@@ -39,7 +40,7 @@ plt.ylabel('Frecuencia dias')
 plt.grid(axis='y')
 plt.tight_layout()    
 plt.savefig('output/frecuencia_llamadas_por_dia.png')
-plt.show()  
+# plt.show()  
 
 # Distribucion continua: duracion de llamadas
 #Histrograma  y KDE VARIABLES CONTINUAS
@@ -50,6 +51,28 @@ plt.ylabel('Frecuencia')
 plt.grid(axis='y')
 plt.tight_layout()
 plt.savefig('output/histograma_duracion_llamadas.png')
-plt.show()
+# plt.show()
 
 # Funcion de densidad de la normal (Formal funcional)
+x_vals = np.linspace(0,16,200)
+y_vals = stats.norm.pdf(x_vals, loc=8, scale=2)
+
+#Graficar la funcion de densidad
+plt.plot(x_vals, y_vals, color='blue', label='Función de densidad')
+plt.title('Función de la distribución normal') 
+plt.xlabel('Duración de llamada (minutos)')
+plt.ylabel('Densidad')
+plt.grid(True)  
+plt.tight_layout()
+plt.legend()
+plt.savefig('output/funcion_densidad_normal.png')
+# plt.show()                   
+
+# cual es la probabilidad de que la duracion de una llamada sea 7 llamada al dia
+prob_7 = poisson.pmf(7, mu=5)
+print(f'Probabilidad de recibir 7 llamadas en un día: {prob_7:.4f}')
+
+# cual es la probabilidad de que la duracion de una llamada sea menor a 7 minutos
+prob_menor_7 = stats.norm.cdf(7, loc=8, scale=2)
+print(f'Probabilidad de que la duración de una llamada sea menor a 7 minutos: {prob_menor_7:.4f}')
+
