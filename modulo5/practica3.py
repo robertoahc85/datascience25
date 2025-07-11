@@ -40,3 +40,16 @@ plt.grid(axis='y')
 plt.tight_layout()    
 plt.savefig('output/frecuencia_llamadas_por_dia.png')
 plt.show()  
+
+# Distribucion continua: duracion de llamadas
+#Histrograma  y KDE VARIABLES CONTINUAS
+sns.histplot(df['duracion_llamada'], bins=30, kde=True, color='lightgreen')
+plt.title('Histograma de la duración de llamadas')
+plt.xlabel('Duración de llamada (minutos)')
+plt.ylabel('Frecuencia')
+plt.grid(axis='y')
+plt.tight_layout()
+plt.savefig('output/histograma_duracion_llamadas.png')
+plt.show()
+
+# Funcion de densidad de la normal (Formal funcional)
