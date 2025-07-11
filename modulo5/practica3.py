@@ -27,3 +27,16 @@ df = pd.DataFrame({
     'nivel_satisfacion': nivel_satisfacion
 })
 df.to_csv('input/datos_llamadas.csv', index=False)
+
+# Distribuccion discreta: llamadas por dia
+frencuencias_llamadas = df['llamadas'].value_counts().sort_index()
+print("Frecuencias de llamadas por día:")
+print(frencuencias_llamadas)
+frencuencias_llamadas.plot(kind='bar', color='skyblue')
+plt.title('Frecuencia de llamadas por día')
+plt.xlabel('Número de llamadas')
+plt.ylabel('Frecuencia dias')               
+plt.grid(axis='y')
+plt.tight_layout()    
+plt.savefig('output/frecuencia_llamadas_por_dia.png')
+plt.show()  
