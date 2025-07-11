@@ -1,0 +1,29 @@
+#Analisis Variables Aleatorias y Distribuciones con python
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import scipy.stats as stats
+# Configuración de estilo para los gráficos
+
+#Generacion de datos simulados
+#fijmos la semilla para reproducibilidad
+np.random.seed(42)
+#Numero de registros simulados
+n = 300
+#Variables discretas ,numero de llamadas ,simuladas con distribucion Poisson
+llamadas_por_dia = np.random.poisson(lam=5, size=n)
+
+#Variables continuas, tiempos de espera simulados con distribucion normal
+duracion_llamada= np.random.normal(loc=8, scale=2, size=n)
+
+#variables categoricas, tipo de llamada simuladas con distribucion uniforme
+nivel_satisfacion= np.random.randint(1, 6, size=n) # # 1 a 5 el ultimo valor es 5 por que el 6 excluido
+
+df = pd.DataFrame({
+    'llamadas': llamadas_por_dia,
+    'duracion_llamada': np.round(duracion_llamada, 2),  # Redondear a 2 decimales
+    'nivel_satisfacion': nivel_satisfacion
+})
+df.to_csv('input/datos_llamadas.csv', index=False)
