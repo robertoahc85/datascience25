@@ -27,8 +27,8 @@ plt.xlabel('Tamaño de la muestra (n)')
 plt.ylabel('Media muestral')
 plt.legend()
 plt.grid()
-plt.show()
 plt.savefig('graficas/ley_grande_numero.png')
+plt.show()
 
 #imprimir los resultados
 for n in tamanos_muestra:   
