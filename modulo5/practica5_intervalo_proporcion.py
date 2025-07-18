@@ -1,39 +1,44 @@
-# Ejercicio: Calcule un intervalo de confianza del 90% para 200
-# personas con 60 a favor de una política.
 import numpy as np
-import pandas as pd
-import seaborn as sns
 import matplotlib.pyplot as plt
 import scipy.stats as stats
+import os
 
-n= 200
-p_hat = 60/n
-z_critical = stats.norm.ppf(0.95)
+# Crear carpeta si no existe
+os.makedirs("graficas", exist_ok=True)
 
-#intervalo de confianza
-margin_error = z_critical * np.sqrt(p_hat * (1- p_hat)/n)
+# Datos base
+n = 200
+apoyan = 60
+p_hat = apoyan / n
+z_critical = stats.norm.ppf(0.95)  # 90% bilateral → z = 1.645 aprox
+
+# Calcular intervalo de confianza
+margin_error = z_critical * np.sqrt(p_hat * (1 - p_hat) / n)
 ci = (p_hat - margin_error, p_hat + margin_error)
-print(f"El intervalo de confianza del 90% para la proporción es: ({ci[0]:.3f}, {ci[1]:.3f})")
 
-#Visualizacion 
-# Simulamos datos binomiales para visualizar la proporción de apoyo
-data = pd.DataFrame({'apoyo': np.random.binomial(1, p_hat, n)})
+# Valores para gráfica
+no_apoyan = n - apoyan
 
-# Visualizamos la proporción de apoyo con un histograma
-sns.histplot(data['apoyo'], bins=2, discrete=True)
-plt.axvline(ci[0], color='red', linestyle='--', label=f'Límite inferior IC 90% {ci[0]}')
-plt.axvline(ci[1], color='green', linestyle='--', label=f'Límite superior IC 90%{ci[1]}')
-plt.legend()
-plt.title('Histograma de Apoyo')
-plt.xlabel('Apoyo (1=Sí, 0=No)')
-plt.ylabel('Frecuencia')
-plt.savefig('graficas/histograma_apoyo.png')
-plt.show()
+# Gráfico de barra en formato vertical
+fig, ax = plt.subplots(figsize=(5, 6))
 
-# Graficamos la proporción de apoyo
-sns.countplot(x='apoyo', data=data)
-plt.title('Distribución de Apoyo')
-plt.xlabel('Apoyo (1=Sí, 0=No)')
-plt.ylabel('Cantidad')
-plt.savefig('graficas/intervalo_proporcion.png')
+# Barras
+ax.bar(0, apoyan, color='green', label=f'Apoyo ({apoyan})')
+ax.bar(0, no_apoyan, bottom=apoyan, color='salmon', label=f'No Apoyo ({no_apoyan})')
+
+# Línea de proporción estimada
+ax.axhline(p_hat * n, color='blue', linestyle='--', label=f'Estimación: {p_hat:.2f}')
+ax.axhline(ci[0] * n, color='red', linestyle='--', label=f'Límite inferior IC: {ci[0]:.2f}')
+ax.axhline(ci[1] * n, color='darkblue', linestyle='--', label=f'Límite superior IC: {ci[1]:.2f}')
+
+# Estética
+ax.set_ylim(0, n)
+ax.set_xticks([0])
+ax.set_xticklabels(['Total 200 personas'])
+ax.set_ylabel('Cantidad de personas')
+ax.set_title('Apoyo a la política con intervalo de confianza del 90%')
+ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=2)
+
+plt.tight_layout()
+plt.savefig('graficas/barra_vertical_ic90.png')
 plt.show()
