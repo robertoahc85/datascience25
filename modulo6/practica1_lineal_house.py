@@ -38,6 +38,39 @@ print(df.describe())
 print("Valores faltantes")
 print (df.isnull().sum())
 
+#inputar Valores faltante numerico con la mediana 
+for column  in ['size_m2','bedrooms','age','price']:
+    if df[column].isnull().sum() > 0:
+        df[column].fillna(df[column].median(),inplace=True)
+
+df['size_m2'] =df['size_m2'].astype(float)
+df['bedrooms'] =df['bedrooms'].astype(int)
+df['age'] =df['age'].astype(int)
+df['price'] =df['price'].astype(float)
+df['neighborhood'] =df['neighborhood'].astype(str)
+
+#Verifcar que no queden valores faltante
+print("Valores faltantes despues del imputacion")
+print (df.isnull().sum())
+
+# 3. Analisis Exploratorios de Datos
+#Grafico interactivo: Relaxcion entre tamano y precio
+fig1 = px.scatter(
+    df,
+    x='size_m2',
+    y='price',
+    color='neighborhood',
+    title="Tamaño de la vivienda vs Precio",
+    labels={'size_m2': 'Tamaño (m2)', 'price': 'Precio'},
+    hover_data= ['bedrooms','age'])
+fig1.update_layout(showlegend = True)
+fig1.write_html('graph/size_vs_price.html')
+# fig1.show()
+
+
+
+
+        
 
 
 
