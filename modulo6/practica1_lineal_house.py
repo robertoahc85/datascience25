@@ -67,6 +67,33 @@ fig1.update_layout(showlegend = True)
 fig1.write_html('graph/size_vs_price.html')
 # fig1.show()
 
+#Grafico interactivo : Relacion entre numero de habitacion y precio
+fig2 = px.box(df,x='bedrooms',y ='price', color='neighborhood',
+              title = "Numero de habitacion vs Precio",
+              labels={'bedrooms': 'Habitaciones', 'price': 'Precio'})
+fig2.update_layout(showlegend = True)
+fig2.write_html('graph/bedrooms_vs_price.html')
+
+
+#Detectar valores atipico (outlier)
+Q1 = df['price'].quantile(0.25)
+Q3 = df['price'].quantile(0.75)
+IQR = Q3 - Q1
+outliers = df[(df['price'] < (Q1 - 1.5 * IQR)) | (df['price'] > (Q3 + 1.5 * IQR))]
+print(f"Numero de valores atipicos en precio: {len(outliers)}")
+
+# 4. Codificacion de variables categoricas
+# #Aplicar en One-Hot en la columna neighboord
+encoder = OneHotEncoder(sparse=False, drop='first')
+#Aplica la codificacion al Dataframe original
+encoded_neighborhood  = encoder.fit_transform(df[['neighborhood']])
+#Convierte el resultado un nuevo dataframe con nombre de columnas claros
+encoded_df = pd.DataFrame(encoded_neighborhood, columns= encoder.get_feature_name({'neighborhood'}))
+
+#Combina columnas codificadas. 
+df = pd.concat([df.drop('neighborhood',axis=1),encoded_df],axis=1)
+
+
 
 
 
