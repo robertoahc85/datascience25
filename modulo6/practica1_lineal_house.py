@@ -84,14 +84,53 @@ print(f"Numero de valores atipicos en precio: {len(outliers)}")
 
 # 4. Codificacion de variables categoricas
 # #Aplicar en One-Hot en la columna neighboord
-encoder = OneHotEncoder(sparse=False, drop='first')
+encoder = OneHotEncoder(sparse_output=False, drop='first')
+#Columna Categorica Normal"
+#Centro
+#Norte
+#Sur..
+# neighborhood_Residencial  neighborhood_Sur  neighborhood_Universitario  neighborhood_nan
+#             0.0               0.0                         0.0
 #Aplica la codificacion al Dataframe original
 encoded_neighborhood  = encoder.fit_transform(df[['neighborhood']])
 #Convierte el resultado un nuevo dataframe con nombre de columnas claros
-encoded_df = pd.DataFrame(encoded_neighborhood, columns= encoder.get_feature_name({'neighborhood'}))
-
+encoded_df = pd.DataFrame(encoded_neighborhood, columns=encoder.get_feature_names_out(['neighborhood']))
 #Combina columnas codificadas. 
 df = pd.concat([df.drop('neighborhood',axis=1),encoded_df],axis=1)
+print(df)
+#Division de datos
+X = df.drop('price',axis=1)
+y = df['price']
+
+X_train ,X_test ,y_train,y_test = train_test_split(X,y, test_size=0.2, random_state=42)
+
+print(f"\n Datos Entrenamiento: {X_train.shape[0]} filas,{X_train.shape[1]} columnas")
+print(f"Datos de prueba: {X_test.shape[0]}filas")
+
+#Entrenamiento del modelo con stastmodels
+X_train_sm = sm.add_constant(X_train)
+
+X_test_sm = sm.add_constant(X_test)#
+
+model = sm.OLS(y_train, X_train).fit() #Regresio Lineal Ordinariaajustar los coefieciente para el erro cuadratico medio en  tre lo valor reales y predicos
+
+print("\Resumen del Modelo")
+print(model.summary())
+
+
+#Mostra coeficiente
+#Son lo valores numerico que  representa la relacion ente 
+# variable independiente(predcitora) y variable dependiente(objetivo)
+
+print("\Coeficientes del modelo")
+print("Variables".ljust(30) + "Coeficiente")
+print("-" * 45)
+for feature, coef, in zip(X_train_sm.columns, model.params): #itera sobre cada nombre de la varialbe, y su coeficiente estimado
+    print (f"{feature.ljust(30)} {coef:.2f}")
+    
+        
+
+
 
 
 
