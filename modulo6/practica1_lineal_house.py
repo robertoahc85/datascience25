@@ -13,10 +13,13 @@
 
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 import plotly.express as px 
 import plotly.graph_objects as go 
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import r2_score 
+from sklearn.metrics import mean_squared_error
 import statsmodels.api as sm 
 # from IPpython.display import HTML
 
@@ -108,11 +111,11 @@ print(f"\n Datos Entrenamiento: {X_train.shape[0]} filas,{X_train.shape[1]} colu
 print(f"Datos de prueba: {X_test.shape[0]}filas")
 
 #Entrenamiento del modelo con stastmodels
-X_train_sm = sm.add_constant(X_train)
+X_train_sm = sm.add_constant(X_train, has_constant='add')
 
-X_test_sm = sm.add_constant(X_test)#
+X_test_sm = sm.add_constant(X_test, has_constant='add')#
 
-model = sm.OLS(y_train, X_train).fit() #Regresio Lineal Ordinariaajustar los coefieciente para el erro cuadratico medio en  tre lo valor reales y predicos
+model = sm.OLS(y_train, X_train_sm).fit() #Regresio Lineal Ordinariaajustar los coefieciente para el erro cuadratico medio en  tre lo valor reales y predicos
 
 print("\Resumen del Modelo")
 print(model.summary())
@@ -124,11 +127,36 @@ print(model.summary())
 
 print("\Coeficientes del modelo")
 print("Variables".ljust(30) + "Coeficiente")
-print("-" * 45)
-for feature, coef, in zip(X_train_sm.columns, model.params): #itera sobre cada nombre de la varialbe, y su coeficiente estimado
-    print (f"{feature.ljust(30)} {coef:.2f}")
+for feature, coef in zip(X_train.columns, model.params[1:]):
+    print(f"{feature.ljust(30)}{coef:.4f}")
     
-        
+#7 Evaluacion del  modelo
+y_pred = model.predict(X_test_sm)
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+#R² 
+#1 Prediccion perfecta
+#0.0. El modelo no explica es igual que predecir el promedio
+#<0  pero que predeciri el promedio (modelo inutil)
+
+print("\n Evaluacion del Modelo")  
+print(f"Error Cuadratico Medio(MSE):{mse:.2f}") 
+print(f"Coeficiente R2:{r2:.2f}")
+
+
+#9. Visualizacion final. Predicicon vs, 
+plt.figure(figsize=(8,6))
+plt.scatter(y_test, y_pred, alpha=0.7, color="salmon", edgecolors='k')
+plt.plot([y_test.min(),y_test.max()],[y_test.min(),y_test.max()],'r--', lw=2)
+plt.xlabel("Precio Real")
+plt.ylabel("Precio Predicho")
+plt.title("Comparación: Precio Real vs Precio Predicho")
+plt.grid(True)
+plt.tight_layout()
+plt.savefig('graph/pred_vs_real.png')
+plt.show()
+
+
 
 
 
