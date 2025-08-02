@@ -1,0 +1,85 @@
+
+    <html>
+    <head>
+        <title>Dashboard: Métodos de Validación Cruzada</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="container mt-5">
+            <h1>Dashboard de Validación Cruzada</h1>
+            <p>Comparación de 4 métricas para distintos métodos</p>
+            <h2>Tabla de Resultados</h2>
+            <table class="dataframe table table-bordered">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Accuracy</th>
+      <th>Precision</th>
+      <th>Recall</th>
+      <th>F1-score</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Hold-out</th>
+      <td>0.90</td>
+      <td>1.000</td>
+      <td>0.833</td>
+      <td>0.909</td>
+    </tr>
+    <tr>
+      <th>Stratified K-Fold</th>
+      <td>0.72</td>
+      <td>0.825</td>
+      <td>0.633</td>
+      <td>0.672</td>
+    </tr>
+    <tr>
+      <th>Leave-One-Out</th>
+      <td>0.74</td>
+      <td>0.340</td>
+      <td>0.340</td>
+      <td>0.340</td>
+    </tr>
+  </tbody>
+</table>
+            <hr>
+            <h2>Gráfica Comparativa</h2>
+            <img src="grafica_validacion.png" class="img-fluid">
+            <hr>
+            <h2>Interpretación Dinámica</h2>
+            
+    <div class="alert alert-info">
+    <h5>Hold-out</h5>
+    <ul>
+        <li>Accuracy Promedio: 0.900</li>
+        <li>Precision Promedio: 1.000</li>
+        <li>Recall Promedio: 0.833</li>
+        <li>F1-score Promedio: 0.909</li>
+    </ul>
+    </div>
+    
+    <div class="alert alert-info">
+    <h5>Stratified K-Fold</h5>
+    <ul>
+        <li>Accuracy Promedio: 0.720</li>
+        <li>Precision Promedio: 0.825</li>
+        <li>Recall Promedio: 0.633</li>
+        <li>F1-score Promedio: 0.672</li>
+    </ul>
+    </div>
+    
+    <div class="alert alert-info">
+    <h5>Leave-One-Out</h5>
+    <ul>
+        <li>Accuracy Promedio: 0.740</li>
+        <li>Precision Promedio: 0.340</li>
+        <li>Recall Promedio: 0.340</li>
+        <li>F1-score Promedio: 0.340</li>
+    </ul>
+    </div>
+    
+        </div>
+    </body>
+    </html>
+    
