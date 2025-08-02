@@ -35,5 +35,13 @@ model.fit(X_train,y_train)
 #Predicir el conjuto de pruebas
 y_pred = model.predict(X_test)
 
+#Almacena la metrica de evaluacion, 
+resultado["Acurracy"].append(accuracy_score(y_test,y_pred)) # Acurracy es util cuando  la clase esta balanceadas, 
+resultado["Precission"].append(precision_score(y_test, y_pred))# Precission Score, mide cuanto elemento predicho como positivo Precision=TP/TP +FP . TP=Verdaderos Positivo, FP= Falsos positivos
+resultado["Recall"].append(recall_score(y_test, y_pred))# Recall score  mide cuantos positivo fueron realmente indentificados Recall= TP / TP +FN 
+resultado["F1-score"].append(f1_score(y_test, y_pred))# F1-Score, Es media armonica entre precision y recall  F1 = 2 (Precision x Recall / Precision + Recalla)
+nombres.append("Hold-out")
+
+#4. Metodo: k- Fold (k=5)
 
 
