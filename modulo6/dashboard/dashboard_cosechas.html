@@ -1,0 +1,149 @@
+
+    <!DOCTYPE html>
+    <html><head><meta charset="utf-8">
+    <title>Dashboard Cosechas 2023</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    </head><body><div class="container mt-4">
+    <h1>🌾 Dashboard: Cosechas 2023</h1>
+
+    <h2>📋 Muestra del Dataset</h2>
+    <table border="1" class="dataframe table table-striped">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Empresa</th>
+      <th>Especie</th>
+      <th>Toneladas_Cosechadas</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>SALMONES AYSEN S.A.</td>
+      <td>SALMON COHO</td>
+      <td>3172.132</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>SALMONES AYSEN S.A.</td>
+      <td>SALMON COHO</td>
+      <td>2551.875</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>TORNAGALEONES S.A., GRANJA MARINA</td>
+      <td>SALMON COHO</td>
+      <td>3958.815</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>CALETA BAY MAR SpA</td>
+      <td>SALMON COHO</td>
+      <td>4101.942</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>CALETA BAY MAR SpA</td>
+      <td>TRUCHA ARCOIRIS</td>
+      <td>2849.434</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>SALMONES AYSEN S.A.</td>
+      <td>SALMON COHO</td>
+      <td>3098.251</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>SAYSEN I SPA</td>
+      <td>SALMON COHO</td>
+      <td>1972.344</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>MOWI CHILE S.A.</td>
+      <td>SALMON DEL ATLANTICO</td>
+      <td>6242.285</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>SALMONES CAMANCHACA S.A.</td>
+      <td>SALMON COHO</td>
+      <td>3390.778</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>SALMONES AYSEN S.A.</td>
+      <td>SALMON COHO</td>
+      <td>1860.840</td>
+    </tr>
+  </tbody>
+</table>
+
+    <hr><h2>📈 Comparación de Escalamiento</h2>
+    <img src="cosechas_escalado.png" class="img-fluid"/>
+
+    <hr><h2>📊 Estadísticas por Técnica</h2>
+    <table border="1" class="dataframe table table-bordered table-sm">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Media</th>
+      <th>Desviación estándar</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Toneladas_Cosechadas</th>
+      <td>3319.277</td>
+      <td>1773.194</td>
+    </tr>
+    <tr>
+      <th>Cosecha_StandardScaler</th>
+      <td>0.000</td>
+      <td>1.001</td>
+    </tr>
+    <tr>
+      <th>Cosecha_MinMaxScaler</th>
+      <td>0.360</td>
+      <td>0.192</td>
+    </tr>
+    <tr>
+      <th>Cosecha_RobustScaler</th>
+      <td>-0.095</td>
+      <td>0.961</td>
+    </tr>
+    <tr>
+      <th>Cosecha_log</th>
+      <td>7.391</td>
+      <td>2.137</td>
+    </tr>
+    <tr>
+      <th>Cosecha_sqrt</th>
+      <td>53.349</td>
+      <td>21.777</td>
+    </tr>
+    <tr>
+      <th>Cosecha_normalized</th>
+      <td>1.000</td>
+      <td>0.000</td>
+    </tr>
+  </tbody>
+</table>
+
+    <div class='card mt-4'><div class='card-body'><h5 class='card-title'>📌 Interpretación Automática</h5><ul><li><strong>Toneladas_Cosechadas:</strong> media=3319.3, STD=1773.2. Requiere escalamiento.</li><li><strong>Cosecha_StandardScaler:</strong> centrado en 0, desviación ≈1. Ideal para regresión.</li><li><strong>Cosecha_MinMaxScaler:</strong> escala [0-1]. Útil para redes neuronales.</li><li><strong>Cosecha_RobustScaler:</strong> robusto a outliers. Desviación ≈ 0.96.</li><li><strong>Cosecha_log:</strong> reduce sesgo positivo y valores grandes.</li><li><strong>Cosecha_sqrt:</strong> suaviza la distribución.</li><li><strong>Cosecha_normalized:</strong> vector normalizado. Útil para distancias.</li></ul></div></div>
+
+    <hr><h2>🔢 Regresión Lineal</h2>
+    <div class="alert alert-info">
+        <strong>R² Score:</strong> 0.292<br>
+        <strong>Error Cuadrático Medio (MSE):</strong> 1675051.83
+    </div>
+    <img src="regresion_resultado.png" class="img-fluid mt-3"/>
+
+    <hr><h2>✅ Conclusión</h2>
+    <div class="alert alert-success">
+        Se aplicó un flujo de procesamiento y predicción sobre la variable <strong>Toneladas Cosechadas</strong>.
+        El modelo de regresión ofrece una aproximación inicial al comportamiento de las cosechas.
+    </div>
+    </div></body></html>
+    
