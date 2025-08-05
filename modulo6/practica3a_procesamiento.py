@@ -71,5 +71,24 @@ df_onehot = pd.DataFrame(datos_transformados,columns=columnas_onehot)
 print("\nDataset con One Hot Encoding:")
 print(df_onehot)
 
+#=======================================
+#4. Crear Variables Dummies con pandas
+df_dummies = pd.get_dummies(df, columns=['plan', 'estatus'], drop_first=False)
+print("\nDataset con Variables Dummies:")
+print(df_dummies)
+
+
+#5. Comparación de métodos
+# Label Encoding es simple y rápido, pero puede introducir un orden artificial.
+# One Hot Encoding es más adecuado para categorías nominales, pero aumenta la dimensionalidad.
+# Variables Dummies en pandas es una forma conveniente de aplicar One Hot Encoding directamente en un DataFrame.
+# La elección del método depende del tipo de variable categórica y del modelo que se vaya a utilizar.                   
+
+print("\nComparación de métodos:")
+print("Original Dataset:",df.shape)
+print("Label Encoding:")
+print(df[['cliente_id', 'genero', 'genero_encoded', 'estatus', 'estatus_encoded']].shape)
+print("One Hot Encoding:",df_onehot.shape)
+print("Variables Dummies:",df_dummies.shape)        
 
 
