@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard de Procesamiento de Datos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Dashboard de Procesamiento de Datos</h1>
+        <p>Este dashboard resume el procesamiento de variables categóricas y numéricas utilizando técnicas modernas.</p>
+
+        <h2>📊 Distribución de Scores Escalados</h2>
+        <img src="distribucion_scores_escalados.png" class="img-fluid rounded shadow">
+
+        <h2 class="mt-5">📄 Resumen de Técnicas Aplicadas</h2>
+        <table class="dataframe table table-bordered table-striped">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Tecnica</th>
+      <th>Media</th>
+      <th>Desviación Estándar</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Label Encoding</td>
+      <td>5.779000e+02</td>
+      <td>195.704681</td>
+    </tr>
+    <tr>
+      <td>One Hot Encoding</td>
+      <td>3.333333e-01</td>
+      <td>0.477243</td>
+    </tr>
+    <tr>
+      <td>Variables Dummies</td>
+      <td>3.333333e-01</td>
+      <td>0.477243</td>
+    </tr>
+    <tr>
+      <td>StandardScaler</td>
+      <td>1.110223e-16</td>
+      <td>1.054093</td>
+    </tr>
+    <tr>
+      <td>MinMaxScaler</td>
+      <td>5.263265e-01</td>
+      <td>0.399397</td>
+    </tr>
+    <tr>
+      <td>RobustScaler</td>
+      <td>1.805981e-01</td>
+      <td>0.570984</td>
+    </tr>
+    <tr>
+      <td>PowerTransformer</td>
+      <td>1.254552e-15</td>
+      <td>1.054093</td>
+    </tr>
+    <tr>
+      <td>Normalizer</td>
+      <td>2.633941e-01</td>
+      <td>0.003450</td>
+    </tr>
+  </tbody>
+</table>
+
+        <h2 class="mt-5">📌 Interpretación Automática</h2>
+        <div style='font-family: Arial, sans-serif; line-height: 1.6;'> <h2>Interpretación de Resultados Automatica</h2><li> msg</li> </ul></div>
+    </div>
+</body>
+</html>
