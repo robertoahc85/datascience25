@@ -314,25 +314,60 @@ resumen = pd.DataFrame({
 resumen.to_csv('dashboard/resumen_tecnicas.csv', index=False)
 
 #Paso 10" interpretación  de resultado en html
-interpretacion_html = "<div style='font-family: Arial, sans-serif; line-height: 1.6;'> <h2>Interpretación de Resultados Automatica</h2>" 
-for _, row in resumen.iterrows():
-    tecnica = row['Tecnica']
-    media = row['Media']
-    desviacion = row['Desviación Estándar']
-    if tecnica == "Original":
-        msg = f"<p><strong>{tecnica}</strong>: Media = {media:.2f}, Desviación Estándar = {desviacion:.2f} (Valores originales)</p>"
-    elif tecnica == "Label Encoding":
-        msg = f"<p><strong>{tecnica}</strong>: Media = {media:.2f}, Desviación Estándar = {desviacion:.2f} (Valores enteros asignados a categorías)</p>"
-    elif tecnica in ["One Hot Encoding", "Variables Dummies"]:
-        msg = f"<p><strong>{tecnica}</strong>: Media = {media:.2f}, Desviación Estándar = {desviacion:.2f} (Valores binarios asignados a categorías)</p>"
-    elif tecnica in ["StandardScaler", "MinMaxScaler", "RobustScaler", "PowerTransformer", "Normalizer"]: 
-        msg = f"<p><strong>{tecnica}</strong>: Media = {media:.2f}, Desviación Estándar = {desviacion:.2f} (Valores escalados)</p>"                 
-        
-interpretacion_html +=f"<li> msg</li> "      
-interpretacion_html += "</ul></div>"
+# Asegúrate de tener el archivo resumen ya cargado en `resumen`
+# y que contenga estas columnas exactas:
+# - "Técnica"
+# - "Media"
+# - "Desviación estándar"
 
-with open('dashboard/interpretacion_resultados.html', 'w') as f:
-    f.write(interpretacion_html)   
+interpretacion_html = """
+<div class='card mt-4'>
+  <div class='card-body'>
+    <h5 class='card-title'>📌 Interpretación Automática</h5>
+    <ul>
+"""
+
+for _, row in resumen.iterrows():
+    tecnica = row["Tecnica"]
+    media = row["Media"]
+    std = row["Desviación Estándar"]
+
+    if tecnica == "Original":
+        msg = f"<strong>{tecnica}:</strong> media={media:.1f}, STD={std:.1f}. Requiere escalamiento."
+    elif tecnica == "StandardScaler":
+        msg = f"<strong>{tecnica}:</strong> centrado en 0, desviación ≈1. Ideal para regresión."
+    elif tecnica == "MinMaxScaler":
+        msg = f"<strong>{tecnica}:</strong> escala [0-1]. Útil para redes neuronales."
+    elif tecnica == "RobustScaler":
+        msg = f"<strong>{tecnica}:</strong> resistente a outliers. Útil en presencia de valores extremos."
+    elif tecnica == "PowerTransformer":
+        msg = f"<strong>{tecnica}:</strong> mejora la normalidad de la variable. (Box-Cox/Yeo-Johnson)"
+    elif tecnica == "Normalizer":
+        msg = f"<strong>{tecnica}:</strong> vector con norma 1. Útil para algoritmos basados en distancia."
+    elif tecnica == "One Hot Encoding":
+        msg = f"<strong>{tecnica}:</strong> codificación binaria sin orden. Útil para variables nominales."
+    elif tecnica == "Variables Dummies":
+        msg = f"<strong>{tecnica}:</strong> similar a One Hot Encoding, usando pandas."
+    elif tecnica == "Label Encoding":
+        msg = f"<strong>{tecnica}:</strong> asigna números enteros. Útil para categorías ordinales."
+    else:
+        msg = f"<strong>{tecnica}:</strong> media={media:.1f}, STD={std:.1f}."
+
+    interpretacion_html += f"<li>{msg}</li>"
+
+interpretacion_html += "</ul></div></div>"
+
+# Guardar como archivo HTML
+with open("dashboard/interpretacion.html", "w", encoding='utf-8') as f:
+    f.write(interpretacion_html)
+
+
+# Guardar como archivo HTML
+with open("dashboard/interpretacion.html", "w", encoding='utf-8') as f:
+    f.write(interpretacion_html)
+
+
+
 #Paso 11: Generación de Dashboard html completo
 # Convertimos resumen a HTML
 resumen_html = resumen.to_html(index=False, classes='table table-bordered table-striped', border=0)
