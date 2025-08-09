@@ -71,3 +71,12 @@ def entrenar_regresion_logistica(X_train, X_test, y_train, y_test):
 #Clasificación  o regresion mediante particiones recursivas del espacio de características
 #-Como funciona: divide los datos en regiones basadas en Reglas de decisiónes
 #(e.g "Si x1 < 5.0, entonces clase A")
+def entrenar_arbol_decision(X_train, X_test, y_train, y_test):
+    modelo = DecisionTreeClassifier(random_state=42)
+    #Entrenar el modelo con los datos de entrenamiento
+    modelo.fit(X_train, y_train)
+    #Realizar predicciones de los datos de prueba
+    predicciones = modelo.predict(X_test)
+    #Graficar la matriz de confusión
+    graficar_matriz_confusion(y_test, predicciones, 'Árbol de Decisión')
+    return modelo, predicciones, accuracy_score(y_test, predicciones)
