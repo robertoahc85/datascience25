@@ -80,3 +80,5 @@ def entrenar_arbol_decision(X_train, X_test, y_train, y_test):
     #Graficar la matriz de confusión
     graficar_matriz_confusion(y_test, predicciones, 'Árbol de Decisión')
     return modelo, predicciones, accuracy_score(y_test, predicciones)
+
+###
