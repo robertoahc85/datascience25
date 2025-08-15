@@ -5,17 +5,18 @@
 #
 import os
 import collections
-from typing import Counter
+from collections import Counter  
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import  sklearn.model_selection as train_test_split
-from sklearn.datasets import make_classification    
+from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split  
 
 #Tecnicas de balanceo:
 from imblearn.under_sampling import RandomUnderSampler
 from imblearn.over_sampling import RandomOverSampler, SMOTE
 from imblearn.combine import SMOTEENN
+from sklearn.datasets import make_classification
 
 # ---------------------------------------------
 #Parametros  Ajustables
@@ -73,7 +74,7 @@ def plot_side_by_side_counts(title, y_before, y_after):
     fig, ax = plt. subplots(1,2 , figsize=(8,4))
     
     #Antes
-    ax[0].bar(list(cnt_b.keys(),list(cnt_b.values())))
+    ax[0].bar(list(cnt_b.keys()), list(cnt_b.values()))
     ax[0].set_title("Antes")
     ax[0].set_xticks([0,1])
     ax[0].set_xlabel("Clase")
@@ -99,7 +100,7 @@ def plot_sumary_counts(sumary_dict):
     vals_1 = [sumary_dict[k]['class1'] for k in label]
     
     #una grafica por clase
-    fig = plt.figure(figsize=(10.4))
+    fig = plt.figure(figsize=(10, 4))
     #Clase 0
     ax1= fig.add_subplot(121)
     ax1.bar(label, vals_0)
@@ -131,7 +132,54 @@ def main():
         print(pd.concat([X,y], axis=1).head())    
         
     cnt_original= Counter(y)   
-    print("Distribucion de clase original", cnt_original   )
+    print("Distribucion de clase original", cnt_original )
     
+# 2 ) Split estratificado ( para simular entrenamienti real) 
+    X_train, X_test, y_train , y_test = train_test_split(X,y ,test_size= TEST_SIZE, stratify= y, random_state = RANDOM_STATE)
+    
+    print ("Muestra del Train antes del balanceo")
+    print(X_train.head())
+    cnt_train = Counter(y_train)
+    print("Distribucion  TRAIN antes del balanceo", cnt_train)
+
+#3 Balanceo sobre el train (nunca sobre Test)
+# a) Under Sampling
+    rus = RandomUnderSampler(sampling_strategy = UNDERSAMPLING_STRATEGY , random_state= RANDOM_STATE)
+    X_under , y_under = rus.fit_resample(X_train, y_train)
+    print("Muestra train Undersampling")
+    print(X_under.head())
+    cnt_under = Counter(y_under)
+    print("Distribucion TRAIN despues del undersampling",cnt_under)
+ #  b) Oversampling
+    rus = RandomOverSampler(sampling_strategy = OVERSAMPLING_STRATEGY , random_state= RANDOM_STATE)
+    X_over , y_over = rus.fit_resample(X_train, y_train)
+    print("Muestra train Undersampling")
+    print(X_over.head())
+    cnt_over = Counter(y_over)
+    print("Distribucion TRAIN despues del UnderSampling",cnt_over)
+#  b) SMOTE
+    rus = SMOTE(sampling_strategy = SMOTE_STRATEGY , k_neighbors = SMOTE_K_NEIGHBORS ,random_state= RANDOM_STATE)
+    X_sm , y_sm = rus.fit_resample(X_train, y_train)
+    print("Muestra train SMOTE")
+    print(X_sm.head())
+    cnt_sm = Counter(y_sm)
+    print("Distribucion TRAIN despues del SMOTE",cnt_sm)   
+    
+    
+    #4) grafica comparativa (antes , despues por tecnica)
+    plot_side_by_side_counts("UnderSampling(antes vs despues)",y_train,y_under)   
+    plot_side_by_side_counts("OverSampling(antes vs despues)",y_train,y_over)  
+    plot_side_by_side_counts("SMOTES(antes vs despues)",y_train,y_sm)   
+    
+    # 5) grafica resumen ()
+    resumen = {
+        "Original (total)": {"class0": cnt_original.get(0,0), "class1": cnt_original.get(1,0)},
+        "Train": {"class0": cnt_train.get(0, 0), "class1": cnt_train.get(1, 0)},
+        "UnderSampling": {"class0": cnt_under.get(0, 0), "class1": cnt_under.get(1, 0)},
+        "OverSampling": {"class0": cnt_over.get(0, 0), "class1": cnt_over.get(1, 0)},
+        "SMOTE": {"class0": cnt_sm.get(0, 0), "class1": cnt_sm.get(1, 0)},
+    }
+    plot_sumary_counts(resumen)
+
 if __name__ == '__main__':
     main()    
