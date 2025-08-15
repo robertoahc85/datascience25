@@ -80,13 +80,13 @@ print("-------Merge-------------")
 #Inner Join
 df_merge_inner = pd.merge(df_ventas, df_productos, on='Categoria', how = 'inner')
 print(df_merge_inner.head(10))
-df_merge_inner.to_csv("salidas/paso6_merge_inner.csv", index=False)
+df_merge_inner.to_csv("salidas/paso6_find.csv", index=False)
 #Left Join
-df_merge_left= pd.merge(df_ventas,df_empleados, on="Sucursal", how='left')
+df_merge_left= pd.merge(df_ventas,df_productos, on="Categoria", how='left')
 print(df_merge_left.head(10))
 df_merge_left.to_csv("salidas/paso6_merge_left.csv")
 #Rigth Join
-df_merge_right = pd.merge(df_productos, df_ventas, on="Categoria", how="right")
+df_merge_right = pd.merge(df_ventas, df_productos, on="Categoria", how="right")
 print(df_merge_right.head(10))
 df_merge_right.to_csv("Salidas/paso6_merge_right.csv")
 

@@ -1,0 +1,3 @@
+#ignore all .csv an zip file in modulo6
+modulo6/input/*.csv
+modulo6/input/*.zip
