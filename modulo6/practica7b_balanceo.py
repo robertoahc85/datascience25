@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import  sklearn.model_selection as train_test_split
-import sklearn.datasets as make_classification
+from sklearn.datasets import make_classification    
 
 #Tecnicas de balanceo:
 from imblearn.under_sampling import RandomUnderSampler
