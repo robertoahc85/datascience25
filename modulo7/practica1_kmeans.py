@@ -115,7 +115,8 @@ plt.show()
 #    - Elegimos K=3 basados en la simulación inicial (tres segmentos) y los resultados del método del codo/silueta.
 #    - Ajustamos el modelo final y extraemos métricas clave.
 # -----------------------------
-k = 3  # Número de clusters seleccionado
+k = 3
+# Número de clusters seleccionado
 kmeans = KMeans(n_clusters=k, n_init=10, random_state=42)  # Inicializamos el modelo
 kmeans.fit(X_scaled)  # Ajustamos el modelo a los datos escalados
 
