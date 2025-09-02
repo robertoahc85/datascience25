@@ -1,0 +1,259 @@
+
+\documentclass[12pt,a4paper]{article}
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{float}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  urlcolor=blue,
+  citecolor=blue
+}
+
+\lstdefinestyle{mypy}{
+  language=Python,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue}\bfseries,
+  stringstyle=\color{teal!70!black},
+  commentstyle=\color{gray!70},
+  showstringspaces=false,
+  frame=single,
+  breaklines=true,
+  tabsize=2
+}
+
+\title{\textbf{Reto (sin solución): Fashion-MNIST desde cero con NumPy}}
+\author{Curso de Aprendizaje Automático}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section*{Objetivo}
+Implementar \textbf{desde cero (solo NumPy)} un clasificador para \textbf{Fashion-MNIST} (10 clases de prendas). No se permite usar librerías de Deep Learning (Keras/TensorFlow/PyTorch/JAX). El reto incluye carga de datos, preprocesamiento, construcción de una \textbf{red neuronal multicapa}, entrenamiento con \textbf{mini-batches}, visualizaciones y análisis de errores.
+
+\section*{Reglas y Alcance}
+\begin{itemize}[leftmargin=*,nosep]
+  \item \textbf{Permitido}: \texttt{numpy}, \texttt{pandas}, \texttt{matplotlib}. (\texttt{sklearn} solo para métricas como matriz de confusión).
+  \item \textbf{Prohibido}: Keras, TensorFlow, PyTorch, JAX u otras librerías de DL.
+  \item \textbf{Datos}: Fashion-MNIST (formato MNIST: 28$\times$28 gris, 10 clases). Use la versión CSV (columna \texttt{label} + 784 píxeles) o convierta desde \texttt{idx}/\texttt{npz}.
+  \item \textbf{Entrega}: código reproducible + figuras + breve informe (README).
+\end{itemize}
+
+\section*{Clases (para títulos en gráficas)}
+\begin{center}
+0=T-shirt/top, 1=Trouser, 2=Pullover, 3=Dress, 4=Coat, 5=Sandal, 6=Shirt, 7=Sneaker, 8=Bag, 9=Ankle boot
+\end{center}
+
+\section*{Estructura sugerida de proyecto}
+\begin{verbatim}
+fashion_reto/
+├─ data/                  # train.csv (o .npz/.idx)
+├─ figs/                  # imágenes de salida
+├─ src/
+│  ├─ reto_fashion.py     # implementación principal
+│  └─ utils.py            # helpers (opcional)
+└─ README.md              # cómo ejecutar y hallazgos
+\end{verbatim}
+
+\section*{Entregables}
+Guarde las figuras en \texttt{figs/} con estos nombres:
+\begin{itemize}[leftmargin=*,nosep]
+  \item \texttt{fig\_fm\_imagen\_0\_con\_valores.png}
+  \item \texttt{fig\_fm\_10\_ejemplos.png}
+  \item \texttt{fig\_fm\_loss\_train\_val.png}
+  \item \texttt{fig\_fm\_confusion\_matrix.png}
+  \item \texttt{fig\_fm\_errores\_grid.png}
+\end{itemize}
+Reporte en README: accuracy en \textit{train/valid/test} y 2--3 observaciones sobre confusiones típicas.
+
+\section*{Pasos (qué hacer, \underline{sin solución})}
+
+\subsection*{0) Preparación}
+\begin{enumerate}[leftmargin=*,nosep,label=\arabic*)]
+  \item Cree un entorno e instale: \texttt{numpy pandas matplotlib}.
+  \item Fije semilla: \texttt{np.random.seed(100)}.
+\end{enumerate}
+
+\subsection*{1) Carga + EDA breve}
+\begin{enumerate}[leftmargin=*,nosep,label=\alph*)]
+  \item Lea \texttt{data/train.csv}. Separe: \texttt{y = df['label'].values}, \texttt{X\_raw = df.drop('label', axis=1).values}.
+  \item Imprima \texttt{X\_raw.shape}, distribución de clases.
+  \item Visualice:
+    \begin{itemize}[leftmargin=*,nosep]
+      \item Imagen 0 (28$\times$28) con \textbf{valores por píxel} (0--255) sobre la celda.
+      \item Cuadrícula 2$\times$5 con los \textbf{primeros 10} ejemplos (título: nombre de clase).
+    \end{itemize}
+\end{enumerate}
+
+\subsection*{2) Preprocesamiento}
+\begin{enumerate}[leftmargin=*,nosep,label=\alph*)]
+  \item Normalice: \texttt{X = X\_raw.astype(np.float32)/255.0}.
+  \item Codifique etiquetas con \textbf{One-Hot}: \texttt{Y = one\_hot(y, num\_classes=10)}.
+  \item Divida en \textbf{train/valid/test} (80/10/10). Si no usa \texttt{sklearn}, baraje índices manualmente.
+\end{enumerate}
+
+\subsection*{3) Arquitectura}
+Use base: \textbf{784 $\rightarrow$ 64 $\rightarrow$ 32 $\rightarrow$ 10}. Active en ocultas con \textbf{ReLU} o \textbf{Sigmoid}. En salida, \textbf{Softmax} (recomendado) y pérdida \textbf{Cross-Entropy}.
+
+\subsection*{4) Inicialización}
+Inicialice pesos pequeños (escala 0.01) y sesgos en 0. Imprima número de parámetros por capa.
+
+\subsection*{5) Forward}
+Implemente \texttt{forward(X, params)} que devuelva:
+\begin{itemize}[leftmargin=*,nosep]
+  \item \texttt{P}: probabilidades de clase por lote.
+  \item \texttt{cache}: diccionario con intermedios (\texttt{a0,z0,a1,z1,a2,z2}) para backprop.
+\end{itemize}
+
+\subsection*{6) Pérdida}
+Implemente \textbf{Cross-Entropy} multiclase con estabilidad numérica (restar \texttt{max} por fila antes de \texttt{exp}).
+
+\subsection*{7) Backpropagation}
+Calcule gradientes para todas las capas. Con Softmax+CE:
+\begin{center}
+$\delta^{(L)} = \dfrac{P - Y}{B}$, \quad
+$\delta^{(1)} = (\delta^{(L)} W_2^\top) \odot g'(z^{(1)})$, \quad
+$\delta^{(0)} = (\delta^{(1)} W_1^\top) \odot g'(z^{(0)})$
+\end{center}
+donde $g$ es la activación de las ocultas y $B$ el tamaño de \textit{batch}.
+
+\subsection*{8) Entrenamiento (mini-batch)}
+Baraje cada época. Para cada mini-batch: \texttt{forward $\rightarrow$ loss $\rightarrow$ backward $\rightarrow$ update}.
+Registre \texttt{loss\_train} y \texttt{loss\_val}. Grafique y guarde \texttt{fig\_fm\_loss\_train\_val.png}.
+
+\subsection*{9) Evaluación + Errores}
+\begin{itemize}[leftmargin=*,nosep]
+  \item Calcule \textbf{accuracy} en train/valid/test.
+  \item Genere \textbf{matriz de confusión} (\texttt{sklearn.metrics.confusion\_matrix} permitido).
+  \item Muestre 12 errores en cuadrícula 3$\times$4 con títulos: \texttt{Real=\textless nombre\textgreater, Pred=\textless nombre\textgreater}. Guarde \texttt{fig\_fm\_errores\_grid.png}.
+\end{itemize}
+
+\subsection*{10) Experimentos (elija 2+)}
+Cambie tamaño de capas (p.ej., 128/64), compare \textbf{ReLU vs Sigmoid}, pruebe distintas tasas de aprendizaje, agregue \textbf{L2} o \textbf{early stopping}. Documente hallazgos en README.
+
+\section*{Plantilla (esqueleto, sin solución)}
+\begin{lstlisting}[style=mypy,caption={Esqueleto de src/reto_fashion.py con TODOs}]
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+CLASS_NAMES = ["T-shirt/top","Trouser","Pullover","Dress","Coat",
+               "Sandal","Shirt","Sneaker","Bag","Ankle boot"]
+
+# ---------- utils ----------
+def one_hot(y, num_classes=10):
+    # TODO: devolver matriz (N,num_classes) one-hot.
+    raise NotImplementedError
+
+def relu(z):
+    # TODO: implementar ReLU.
+    raise NotImplementedError
+
+def relu_derivative(z):
+    # TODO: derivada de ReLU.
+    raise NotImplementedError
+
+def softmax(z):
+    # TODO: softmax estable numéricamente.
+    raise NotImplementedError
+
+def cross_entropy(y_true, y_pred):
+    # TODO: pérdida CE multiclase estable.
+    raise NotImplementedError
+
+# ---------- modelo ----------
+def init_params(input_dim=784, h1=64, h2=32, num_classes=10, scale=0.01):
+    # TODO: inicializar W0,W1,W2 y b0,b1,b2.
+    raise NotImplementedError
+
+def forward(X, params, activation="relu"):
+    # TODO: calcular a0,z0,a1,z1,a2,z2 y salida P.
+    # Usa 'activation' para ocultas; salida softmax.
+    # Retorna P y cache.
+    raise NotImplementedError
+
+def backward(Y, cache, params, activation="relu"):
+    # TODO: gradientes con softmax+CE:
+    #   delta2 = (P - Y) / B
+    #   delta1 = (delta2 @ W2.T) * g'(z1)
+    #   delta0 = (delta1 @ W1.T) * g'(z0)
+    raise NotImplementedError
+
+def update(params, grads, lr):
+    # TODO: descenso por gradiente.
+    raise NotImplementedError
+
+def accuracy(y_true_labels, y_pred_probs):
+    # TODO: argmax y promedio de aciertos.
+    raise NotImplementedError
+
+# ---------- visualizaciones obligatorias ----------
+def show_first_image_with_values(X_raw, y, outpath="figs/fig_fm_imagen_0_con_valores.png"):
+    # TODO: imagen 0 con valores 0..255 impresos en cada pixel.
+    raise NotImplementedError
+
+def show_first_10_grid(X_raw, y, outpath="figs/fig_fm_10_ejemplos.png"):
+    # TODO: cuadrícula 2x5 con títulos CLASS_NAMES[y[i]].
+    raise NotImplementedError
+
+def show_errors_grid(X_raw, y_true, y_pred, k=12, outpath="figs/fig_fm_errores_grid.png"):
+    # TODO: 3x4 ejemplos erróneos con títulos 'Real= , Pred='.
+    raise NotImplementedError
+
+# ---------- entrenamiento ----------
+def train(X_train, Y_train, X_val, Y_val, params, lr=0.01, batch_size=128, epochs=20, activation="relu"):
+    # TODO: bucle mini-batch:
+    #   - barajar por época
+    #   - forward -> loss -> backward -> update
+    #   - registrar pérdidas y devolver history
+    raise NotImplementedError
+
+def main():
+    np.random.seed(100)
+    df = pd.read_csv("data/train.csv")
+    y = df["label"].values
+    X_raw = df.drop("label", axis=1).values.astype(np.float32)
+
+    show_first_image_with_values(X_raw, y)
+    show_first_10_grid(X_raw, y)
+
+    X = X_raw / 255.0
+    Y = one_hot(y, num_classes=10)
+
+    # TODO: split train/val/test
+    # TODO: params = init_params()
+    # TODO: history = train(...)
+    # TODO: evaluación + matriz de confusión + show_errors_grid(...)
+    # TODO: guardar curva de pérdidas
+
+if __name__ == "__main__":
+    main()
+\end{lstlisting}
+
+\section*{Criterios de evaluación (sugerencia)}
+\begin{itemize}[leftmargin=*,nosep]
+  \item \textbf{Correctitud técnica (40\%)}: forward/backprop correctos, convergencia, métricas.
+  \item \textbf{Calidad de código (20\%)}: claridad, modularidad, comentarios, reproducibilidad.
+  \item \textbf{Visualizaciones (20\%)}: figuras solicitadas, legibles y guardadas.
+  \item \textbf{Análisis (20\%)}: interpretación de errores y propuestas de mejora.
+\end{itemize}
+
+\section*{Cómo compilar}
+Ejecute: \texttt{pdflatex reto\_fashion\_mnist.tex} (dos pasadas recomendadas).
+
+\bigskip
+\noindent\textbf{Nota}: Este documento describe el \emph{reto} y proporciona una plantilla con \texttt{TODOs}. No incluye soluciones.
+
+\end{document}
