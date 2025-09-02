@@ -1,212 +1,210 @@
 # ============================================================
-# DIGIT RECOGNIZER (Kaggle MNIST) — MLP desde cero
-# ============================================================
-# TEORÍA (resumen):
-# - Objetivo: clasificar imágenes de dígitos escritos a mano (0..9).
-# - Datos: cada imagen es 28x28 (=784) pixeles en escala de grises (0..255).
-# - Enfoque: Red neuronal de 2 capas ocultas con activación sigmoide.
-# - Por qué ONE-HOT: convierte la etiqueta entera (p.ej. 7) a un vector
-#   categórico sin orden [0,0,0,0,0,0,0,1,0,0]; evita inducir ordinalidad.
-# - Por qué normalizar: escalar pixeles a [0,1] acelera y estabiliza el
-#   entrenamiento (las activaciones no saturan tan fácil).
-# - Backprop: regla de la cadena para propagar el gradiente salida→ocultas→entrada.
-# - Nota: para multiclase lo más estándar es salida softmax + cross-entropy;
-#   aquí usamos sigmoide+MSE para seguir tu notebook original.
+# DIGIT RECOGNIZER (Kaggle MNIST) — MLP desde cero (versión corregida)
 # ============================================================
 
-# -----------------------------
-# 1) IMPORTS
-# -----------------------------
-import numpy as np                     # Álgebra lineal y utilidades numéricas
-import pandas as pd                    # Manejo de tablas y CSV
-import matplotlib.pyplot as plt        # Gráficas
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
 
 # -----------------------------
-# 2) CARGA DE DATOS
+# 1) CARGA DE DATOS
 # -----------------------------
-df = pd.read_csv('data/train.csv')     # Carga el CSV (ajusta la ruta si hace falta)
+df = pd.read_csv('data/train.csv')   # ajusta ruta si hace falta
+y = df['label'].values              # (N,)
+x = df.drop('label', axis=1)        # DataFrame 784 pixeles
 
-y = df.label.values                    # y: vector de enteros 0..9 (N,)
-x = df.drop("label", axis=1)           # X crudo: DataFrame con 784 columnas de pixeles
-
-print("El conjunto de datos tiene {} filas y {} columnas".format(x.shape[0], x.shape[1]))
-print(x.head(2))                       # Vistazo rápido a las primeras filas
-
-# -----------------------------
-# 3) ONE-HOT ENCODING
-# -----------------------------
-def one_hot(j: int) -> np.ndarray:
-    """
-    Convierte un entero j en un vector one-hot de tamaño 10.
-    TEORÍA: evita que el modelo 'crea' que 9 > 3; todas las clases
-    se vuelven categóricas y mutuamente excluyentes.
-    """
-    e = np.zeros(10, dtype=np.float32) # vector [0,0,...,0] de longitud 10
-    e[j] = 1.0                         # coloca el 1 en la posición de la clase
-    return e
-
-y_onehot = np.array([one_hot(n) for n in y], dtype=np.float32)  # (N,10)
+print(f"Dataset: {x.shape[0]} filas, {x.shape[1]} columnas")
+print(x.head(2))
 
 # -----------------------------
-# 4) NORMALIZACIÓN DE FEATURES
+# 2) ONE-HOT + NORMALIZACIÓN
 # -----------------------------
-X = x.values.astype(np.float32) / 255.0 # escala pixeles 0..255 → 0..1 (mejor para sigmoide)
-Y = y_onehot                            # etiquetas en formato one-hot
-
-# -----------------------------
-# 5) ACTIVACIONES (SIGMOID)
-# -----------------------------
-def sigmoid(t):
-    """σ(t) = 1 / (1 + e^-t). TEORÍA: acota la salida en (0,1)."""
-    return 1.0 / (1.0 + np.exp(-t))
-
-def sigmoid_derivative(p):
-    """
-    Derivada de sigmoide cuando p = σ(t): σ'(t) = σ(t)*(1-σ(t))
-    TEORÍA: necesaria para backprop. Si pasas preactivación, usa σ(z) primero.
-    """
-    return p * (1.0 - p)
+X = x.values.astype(np.float32) / 255.0   # [0,1]
+Y = np.eye(10, dtype=np.float32)[y]       # one-hot (N,10)
 
 # -----------------------------
-# 6) INICIALIZACIÓN DE PESOS
+# 3) SPLIT TRAIN / VAL
 # -----------------------------
-lr = 0.01                               # tasa de aprendizaje (hiperparámetro)
-# Nota teórica: pesos pequeños ayudan a no saturar sigmoides al inicio.
-W0 = np.random.randn(X.shape[1], 16).astype(np.float32)  # (784,16) capa1
-W1 = np.random.randn(16, 16).astype(np.float32)          # (16,16)  capa2
-W2 = np.random.randn(16, 10).astype(np.float32)          # (16,10)  salida
+np.random.seed(100)
+idx = np.random.permutation(X.shape[0])
+split = int(0.9 * len(idx))               # 90% train, 10% val
+train_idx, val_idx = idx[:split], idx[split:]
 
-b0 = np.random.randn(1, 16).astype(np.float32)           # sesgos capa1
-b1 = np.random.randn(1, 16).astype(np.float32)           # sesgos capa2
-b2 = np.random.randn(1, 10).astype(np.float32)           # sesgos salida
-
-mse = 0.0                               # para registrar pérdida MSE
-errors = []                             # historial de pérdidas
+X_train, Y_train = X[train_idx], Y[train_idx]
+X_val,   Y_val   = X[val_idx],   Y[val_idx]
+y_val_labels     = y[val_idx]
 
 # -----------------------------
-# 7) FEEDFORWARD
+# 4) ACTIVACIONES Y PÉRDIDA
 # -----------------------------
-def feedforward(x_input):
-    """
-    Propagación hacia adelante: calcula salida de la red para x_input.
-    Guarda intermedios globales para backprop.
-    """
-    global a0, z0, a1, z1, a2, z2, a3, output
-    global W0, W1, W2, b0, b1, b2
+def relu(z):
+    return np.maximum(0.0, z)
 
-    a0 = x_input                        # a0: activaciones de entrada (B,784)
-    z0 = np.dot(a0, W0) + b0            # preactivación capa1 (B,16)
-    a1 = sigmoid(z0)                    # activación capa1 (B,16)
+def relu_derivative(z):
+    return (z > 0).astype(np.float32)
 
-    z1 = np.dot(a1, W1) + b1            # preactivación capa2 (B,16)
-    a2 = sigmoid(z1)                    # activación capa2 (B,16)
+def softmax(z):
+    z_ = z - z.max(axis=1, keepdims=True)      # estabilidad numérica
+    e  = np.exp(z_)
+    return e / (e.sum(axis=1, keepdims=True) + 1e-12)
 
-    z2 = np.dot(a2, W2) + b2            # preactivación salida (B,10)
-    a3 = sigmoid(z2)                    # activación salida (B,10) — probs 'tipo' sigmoide
-    output = a3                         # alias claro
+def cross_entropy(y_true, y_pred):
+    return -np.mean(np.sum(y_true * np.log(y_pred + 1e-12), axis=1))
 
-    return output                       # retorna ŷ (B,10)
+def accuracy(y_true_labels, y_pred_probs):
+    return np.mean(y_true_labels == np.argmax(y_pred_probs, axis=1))
 
 # -----------------------------
-# 8) BACKPROPAGATION
+# 5) INICIALIZACIÓN TEÓRICA
 # -----------------------------
-def backprop(y_n):
-    """
-    Retropropaga el error y actualiza pesos/sesgos.
-    TEORÍA: regla de la cadena — gradiente de la pérdida fluye de la salida
-    hacia capas anteriores multiplicando derivadas locales.
-    """
-    global mse, W0, W1, W2, b0, b1, b2
-    global a0, a1, a2, z0, z1, z2, output
-    global lr, errors
+# CORRECCIÓN: Antes -> W = randn(0,1); b = randn
+# Motivo: saturación/varianza inestable con sigmoide; sesgos no necesitan aleatoriedad.
 
-    # Pérdida MSE por batch (como en tu notebook); para CE usa otra fórmula.
-    mse = np.sum((y_n - output) ** 2)   # suma (no media) para seguir tu celda
-    errors.append(mse)                  # guarda historial
+def he_init(n_in, n_out):      # para ReLU en ocultas
+    std = np.sqrt(2.0 / n_in)
+    return (std * np.random.randn(n_in, n_out)).astype(np.float32)
 
-    # Gradiente en la salida: dL/dz2 = -(y - ŷ) * σ'(z2)
-    # Nota: usamos la versión que toma la activación ya aplicada (output).
-    delta2 = -(y_n - output) * sigmoid_derivative(output)
+def xavier_init(n_in, n_out):  # para capa softmax (salida)
+    limit = np.sqrt(6.0 / (n_in + n_out))
+    return np.random.uniform(-limit, limit, (n_in, n_out)).astype(np.float32)
 
-    # Gradientes de pesos/sesgo de salida
-    d_w2 = np.dot(a2.T, delta2)                         # (16,10)
-    d_b2 = delta2                                       # (B,10)
+# Arquitectura: 784 -> 128 -> 64 -> 10 (un poco más capaz que 16/16)
+h1, h2 = 128, 64
+lr = 0.01
+batch_size = 128
+epochs = 20
 
-    # Propaga a capa oculta 2: delta1 = (delta2 @ W2^T) * σ'(z1)
-    delta1 = np.dot(delta2, W2.T) * sigmoid_derivative(a2)
-    d_w1 = np.dot(a1.T, delta1)                         # (16,16)
-    d_b1 = delta1                                       # (B,16)
+W0 = he_init(784, h1)                # CORRECCIÓN: He init (antes: randn(784,16))
+b0 = np.zeros((1, h1), dtype=np.float32)      # CORRECCIÓN: ceros (antes: randn)
 
-    # Propaga a capa oculta 1: delta0 = (delta1 @ W1^T) * σ'(z0)
-    delta0 = np.dot(delta1, W1.T) * sigmoid_derivative(a1)
-    d_w0 = np.dot(a0.T, delta0)                         # (784,16)
-    d_b0 = delta0                                       # (B,16)
+W1 = he_init(h1, h2)                 # CORRECCIÓN: He init (antes: randn(16,16))
+b1 = np.zeros((1, h2), dtype=np.float32)      # CORRECCIÓN: ceros
 
-    # Actualización de pesos (descenso por gradiente)
-    W2 -= lr * d_w2;  W1 -= lr * d_w1;  W0 -= lr * d_w0
-
-    # Actualización de sesgos usando promedio por batch (más estable)
-    b2 -= lr * d_b2.mean(axis=0, keepdims=True).reshape(b2.shape)
-    b1 -= lr * d_b1.mean(axis=0, keepdims=True).reshape(b1.shape)
-    b0 -= lr * d_b0.mean(axis=0, keepdims=True).reshape(b0.shape)
+W2 = xavier_init(h2, 10)             # CORRECCIÓN: Xavier para softmax (antes: randn(16,10))
+b2 = np.zeros((1, 10), dtype=np.float32)      # CORRECCIÓN: ceros
 
 # -----------------------------
-# 9) VISUALIZACIÓN INICIAL
+# 6) FEEDFORWARD
 # -----------------------------
-i = 0                                    # índice de la primera imagen
-img = X[i].reshape(28, 28)               # reordena 784→28x28 para mostrar
+def forward(Xb):
+    z0 = Xb @ W0 + b0      # (B,h1)
+    a0 = relu(z0)
 
-plt.figure(figsize=(7, 7))               # figura grande
-plt.imshow(img, cmap="viridis")          # muestra la imagen
-plt.title(f"El número escrito es: {y[i]}")  # título con la etiqueta real
-# Escribimos TODOS los valores de píxel (incluyendo ceros):
+    z1 = a0 @ W1 + b1      # (B,h2)
+    a1 = relu(z1)
+
+    z2 = a1 @ W2 + b2      # (B,10)
+    P  = softmax(z2)       # CORRECCIÓN: Softmax (antes: sigmoid)
+
+    cache = (Xb, z0, a0, z1, a1, z2, P)
+    return P, cache
+
+# -----------------------------
+# 7) BACKPROP (Softmax + CE)
+# -----------------------------
+def backward(Yb, cache):
+    Xb, z0, a0, z1, a1, z2, P = cache
+    B = Xb.shape[0]
+
+    dZ2 = (P - Yb) / B          # CORRECCIÓN: gradiente salida (antes: -(y-ŷ)*σ')
+    dW2 = a1.T @ dZ2
+    db2 = dZ2.sum(axis=0, keepdims=True)
+
+    dA1 = dZ2 @ W2.T
+    dZ1 = dA1 * relu_derivative(z1)
+    dW1 = a0.T @ dZ1
+    db1 = dZ1.sum(axis=0, keepdims=True)
+
+    dA0 = dZ1 @ W1.T
+    dZ0 = dA0 * relu_derivative(z0)
+    dW0 = Xb.T @ dZ0
+    db0 = dZ0.sum(axis=0, keepdims=True)
+
+    return dW0, db0, dW1, db1, dW2, db2
+
+# -----------------------------
+# 8) ENTRENAMIENTO (mini-batch)
+# -----------------------------
+hist_train, hist_val = [], []
+
+for ep in range(1, epochs + 1):
+    perm = np.random.permutation(X_train.shape[0])
+    Xb_all, Yb_all = X_train[perm], Y_train[perm]
+
+    # mini-batches
+    for s in range(0, Xb_all.shape[0], batch_size):
+        e = s + batch_size
+        Xb = Xb_all[s:e]
+        Yb = Yb_all[s:e]
+
+        P, cache = forward(Xb)
+        dW0, db0_, dW1, db1_, dW2, db2_ = backward(Yb, cache)
+
+        # update
+        W0 -= lr * dW0; b0 -= lr * db0_
+        W1 -= lr * dW1; b1 -= lr * db1_
+        W2 -= lr * dW2; b2 -= lr * db2_
+
+    # métricas por época
+    P_tr, _ = forward(X_train)
+    P_va, _ = forward(X_val)
+
+    loss_tr = cross_entropy(Y_train, P_tr)
+    loss_va = cross_entropy(Y_val,   P_va)
+    acc_tr  = accuracy(y[train_idx], P_tr)
+    acc_va  = accuracy(y_val_labels, P_va)
+
+    hist_train.append(loss_tr)
+    hist_val.append(loss_va)
+
+    print(f"Época {ep:02d} | loss_tr={loss_tr:.4f} acc_tr={acc_tr*100:5.2f}% | "
+          f"loss_val={loss_va:.4f} acc_val={acc_va*100:5.2f}%")
+
+# -----------------------------
+# 9) VISUALIZACIÓN EDUCATIVA (igual que tenías)
+# -----------------------------
+i = 0
+img = X[i].reshape(28,28)
+plt.figure(figsize=(7,7))
+plt.imshow(img, cmap='viridis')
+plt.title(f"El número escrito es: {y[i]}")
 for r in range(28):
     for c in range(28):
-        val_0_255 = int(img[r, c] * 255) # reconvertimos a 0..255 para leer mejor
-        plt.text(c, r, str(val_0_255), ha="center", va="center", color="white", fontsize=5)
-plt.axis("off")                          # oculta ejes
-plt.show()                               # renderiza
+        plt.text(c, r, str(int(img[r,c]*255)), ha='center', va='center', color='white', fontsize=5)
+plt.axis('off'); plt.show()
 
-# Cuadrícula con los primeros 10 dígitos (solo color, sin valores sobreimpresos)
-fig, axes = plt.subplots(2, 5, figsize=(10, 5))
+fig, axes = plt.subplots(2,5, figsize=(10,5))
 for j, ax in enumerate(axes.flat):
-    ax.imshow(X[j].reshape(28, 28), cmap="viridis")
-    ax.set_title(f"{y[j]}", fontsize=12) # título: etiqueta real
-    ax.axis("off")
+    ax.imshow(X[j].reshape(28,28), cmap='viridis')
+    ax.set_title(f"{y[j]}", fontsize=12)
+    ax.axis('off')
 plt.suptitle("Primeros 10 dígitos del dataset", fontsize=14)
 plt.show()
 
 # -----------------------------
-# 10) "ENTRENAMIENTO" RÁPIDO (una pasada)*
+# 10) ERRORES EN CUADRÍCULA (educativo)
 # -----------------------------
-# *Para replicar tus celdas y tener algo que evaluar, ejecutamos una sola
-#   iteración sobre todo X. Para un entrenamiento real, recorre epochs y mini-batches.
-_ = feedforward(X)   # forward de todo el dataset
-backprop(Y)          # un paso de backprop con todas las muestras (full-batch)
+P_all, _ = forward(X)
+y_hat = P_all.argmax(axis=1)
+err_idx = np.where(y != y_hat)[0]
+print("Errores totales en el dataset:", len(err_idx))
 
-# -----------------------------
-# 11) PREDICCIÓN Y ERRORES
-# -----------------------------
-y_hat = feedforward(X).argmax(axis=1)     # clase predicha = índice con mayor activación
-mask_err = (y != y_hat)                   # máscara booleana de errores
-idx_err = np.where(mask_err)[0]           # índices de muestras mal clasificadas
-print("Errores totales en el dataset:", len(idx_err))
-
-# -----------------------------
-# 12) VISUALIZACIÓN DE ERRORES EN CUADRÍCULA
-# -----------------------------
-if len(idx_err) > 0:
-    k = min(12, len(idx_err))             # cuántos errores mostrar (hasta 12)
-    sel = idx_err[:k]                     # selecciona los primeros k índices
-
-    fig, axes = plt.subplots(3, 4, figsize=(12, 9))  # cuadrícula 3x4
-    axes = axes.flatten()                              # aplana para iterar fácil
-
+if len(err_idx) > 0:
+    k = min(12, len(err_idx))
+    sel = err_idx[:k]
+    fig, axes = plt.subplots(3,4, figsize=(12,9))
+    axes = axes.flatten()
     for ax, idx in zip(axes, sel):
-        ax.imshow(x.iloc[idx].values.reshape(28, 28), cmap="viridis")  # imagen del error
-        ax.set_title(f"Real={y[idx]}, Pred={y_hat[idx]}")              # etiqueta vs predicción
-        ax.axis("off")                                                 # sin ejes
-
+        ax.imshow(x.iloc[idx].values.reshape(28,28), cmap='viridis')
+        ax.set_title(f"Real={y[idx]}, Pred={y_hat[idx]}")
+        ax.axis('off')
     plt.suptitle("Ejemplos de dígitos mal clasificados", fontsize=16)
     plt.tight_layout()
     plt.show()
+
+# (Opcional) curva de pérdidas
+plt.figure()
+plt.plot(hist_train, label='train')
+plt.plot(hist_val, label='val')
+plt.xlabel('Época'); plt.ylabel('Cross-Entropy'); plt.legend(); plt.title('Evolución de la pérdida')
+plt.show()
