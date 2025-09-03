@@ -142,3 +142,10 @@ for k, idx in enumerate(panel_idx):
 plt.suptitle('Muestras de Test — Predicción (prob) vs Real', y=0.96)
 plt.tight_layout()
 plt.show()
+
+#crea gragicpos de perdida y loss
+plt.figure()
+plt.plot(history.history['loss'], label='train')
+plt.plot(history.history['val_loss'], label='val')
+plt.xlabel('Época'); plt.ylabel('Cross-Entropy'); plt.legend(); plt.title('Evolución de la pérdida')
+plt.show()  
